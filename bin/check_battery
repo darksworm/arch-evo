@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Battery warning notifications via mako
+set -euo pipefail
+
+WARN_LEVEL=20
+CRIT_LEVEL=10
+
+battery_info=$(acpi -b 2>/dev/null | head -1) || exit 0
+
+if [[ -z "${battery_info}" ]]; then
+    exit 0
+fi
+
+level=$(echo "${battery_info}" | grep -oP '\d+(?=%)')
+status=$(echo "${battery_info}" | grep -oP '(Charging|Discharging|Full)')
+
+if [[ "${status}" == "Discharging" ]]; then
+    if [[ ${level} -le ${CRIT_LEVEL} ]]; then
+        notify-send -u critical "Battery Critical" "Battery at ${level}% — plug in now!"
+    elif [[ ${level} -le ${WARN_LEVEL} ]]; then
+        notify-send -u normal "Battery Low" "Battery at ${level}%"
+    fi
+fi

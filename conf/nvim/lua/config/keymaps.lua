@@ -1,0 +1,2 @@
+-- Custom keymaps for arch-evo neovim config
+-- LazyVim defaults are already good; add only what's needed

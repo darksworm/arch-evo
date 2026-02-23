@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Backlight control with wob feedback
+# Usage: backlight-control {up|down}
+set -euo pipefail
+
+WOB_SOCK="/tmp/wob.sock"
+
+case "${1:-}" in
+    up)
+        brightnessctl set +5%
+        ;;
+    down)
+        brightnessctl set 5%-
+        ;;
+    *)
+        echo "Usage: backlight-control {up|down}"
+        exit 1
+        ;;
+esac
+
+brightnessctl -m | cut -d, -f4 | tr -d '%' > "${WOB_SOCK}"

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Restore home directory from NAS backup
+set -euo pipefail
+
+NAS_HOST="${NAS_HOST:-nas}"
+NAS_PATH="${NAS_PATH:-/volume1/backup/arch}"
+
+echo "WARNING: This will overwrite files in ${HOME} with the NAS backup."
+read -rp "Continue? [y/N] " confirm
+[[ "${confirm}" =~ ^[Yy]$ ]] || exit 0
+
+echo "Restoring ${NAS_HOST}:${NAS_PATH} to ${HOME}..."
+rsync -avz --delete \
+    "${NAS_HOST}:${NAS_PATH}/" \
+    "${HOME}/"
+
+echo "Restore complete."

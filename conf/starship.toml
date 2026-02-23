@@ -1,0 +1,44 @@
+# Starship prompt — ported from maac-nix/home.nix
+add_newline = false
+
+format = "$directory$git_branch$git_status$character"
+right_format = "$kubernetes$aws$java$cmd_duration"
+
+[character]
+success_symbol = "[❯](green)"
+error_symbol = "[❯](red)"
+vimcmd_symbol = "[❮](yellow)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "blue bold"
+
+[git_branch]
+format = "[$branch]($style) "
+style = "purple"
+
+[git_status]
+format = "[$all_status$ahead_behind]($style) "
+style = "red"
+
+[kubernetes]
+disabled = false
+format = "[$symbol$context]($style) "
+style = "cyan"
+symbol = "⎈ "
+
+[aws]
+format = "[$symbol$profile]($style) "
+style = "yellow"
+symbol = " "
+
+[java]
+format = "[$symbol$version]($style) "
+style = "red"
+symbol = " "
+
+[cmd_duration]
+min_time = 2000
+format = "[$duration]($style) "
+style = "yellow"

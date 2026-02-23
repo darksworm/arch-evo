@@ -1,0 +1,60 @@
+# arch-evo zshrc
+# Ported from maac-nix/home.nix zsh config
+
+# History
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE="${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history"
+mkdir -p "$(dirname "$HISTFILE")"
+setopt EXTENDED_HISTORY SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE
+
+# Basic vi mode (instant)
+bindkey -v
+
+# Completion
+autoload -Uz compinit
+if [[ -n "${XDG_CACHE_HOME}/zcompdump"(#qN.mh+24) ]]; then
+    compinit -d "${XDG_CACHE_HOME}/zcompdump"
+else
+    compinit -C -d "${XDG_CACHE_HOME}/zcompdump"
+fi
+
+# Aliases
+alias dc="docker compose"
+alias htop="btop"
+alias docker-compose="docker compose"
+alias ls="ls --color=auto"
+alias ll="ls -la"
+alias la="ls -a"
+alias vi="nvim"
+alias vim="nvim"
+
+# Plugins — loaded from system/AUR paths
+
+# Base plugin (vi-mode lazy load, etc.)
+[[ -f "${HOME}/.config/zsh/plugins/base.zsh" ]] && source "${HOME}/.config/zsh/plugins/base.zsh"
+
+# Autosuggestions
+[[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# FZF history search
+[[ -f /usr/share/zsh/plugins/zsh-fzf-history-search/zsh-fzf-history-search.plugin.zsh ]] && \
+    source /usr/share/zsh/plugins/zsh-fzf-history-search/zsh-fzf-history-search.plugin.zsh
+
+# Dev plugin (direnv, zoxide, fnm lazy loading)
+[[ -f "${HOME}/.config/zsh/plugins/dev.zsh" ]] && source "${HOME}/.config/zsh/plugins/dev.zsh"
+
+# Fast syntax highlighting (must be last)
+[[ -f /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]] && \
+    source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+
+# Starship prompt — cached and compiled for speed
+_starship_cache="${XDG_CACHE_HOME:-$HOME/.cache}/starship-init.zsh"
+if [[ ! -f "$_starship_cache" ]]; then
+    mkdir -p "${_starship_cache:h}"
+    starship init zsh > "$_starship_cache"
+    zcompile "$_starship_cache"
+fi
+source "$_starship_cache"
+unset _starship_cache

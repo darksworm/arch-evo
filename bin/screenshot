@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# Screenshot with grim + slurp + wl-copy
+# Usage: screenshot [full|region|window]
+set -euo pipefail
+
+SCREENSHOT_DIR="${HOME}/Pictures/screenshots"
+mkdir -p "${SCREENSHOT_DIR}"
+
+FILENAME="${SCREENSHOT_DIR}/$(date +%Y%m%d_%H%M%S).png"
+
+case "${1:-region}" in
+    full)
+        grim "${FILENAME}"
+        ;;
+    region)
+        grim -g "$(slurp)" "${FILENAME}"
+        ;;
+    *)
+        echo "Usage: screenshot [full|region]"
+        exit 1
+        ;;
+esac
+
+wl-copy < "${FILENAME}"
+notify-send "Screenshot saved" "${FILENAME}"

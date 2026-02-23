@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+# Backup home directory to NAS via rsync
+set -euo pipefail
+
+NAS_HOST="${NAS_HOST:-nas}"
+NAS_PATH="${NAS_PATH:-/volume1/backup/arch}"
+EXCLUDES=(
+    ".cache"
+    ".local/share/Trash"
+    "node_modules"
+    ".npm"
+    "__pycache__"
+    ".gradle"
+    ".m2"
+    "target"
+    ".docker"
+    "go/pkg"
+)
+
+EXCLUDE_ARGS=()
+for ex in "${EXCLUDES[@]}"; do
+    EXCLUDE_ARGS+=(--exclude "${ex}")
+done
+
+echo "Backing up ${HOME} to ${NAS_HOST}:${NAS_PATH}..."
+rsync -avz --delete \
+    "${EXCLUDE_ARGS[@]}" \
+    "${HOME}/" \
+    "${NAS_HOST}:${NAS_PATH}/"
+
+echo "Backup complete."

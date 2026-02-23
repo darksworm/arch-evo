@@ -1,0 +1,17 @@
+export EDITOR=nvim
+export VISUAL=nvim
+export TERMINAL=foot
+export BROWSER=brave
+
+# XDG
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_STATE_HOME="${HOME}/.local/state"
+
+# PATH
+export PATH="${HOME}/.local/bin:${PATH}"
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:${PATH}"
+
+# GPG
+export GPG_TTY=$(tty)

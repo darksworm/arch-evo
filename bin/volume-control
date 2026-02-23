@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Volume control with wob feedback
+# Usage: volume-control {up|down|mute}
+set -euo pipefail
+
+WOB_SOCK="/tmp/wob.sock"
+
+case "${1:-}" in
+    up)
+        pamixer -i 5
+        pamixer --get-volume > "${WOB_SOCK}"
+        ;;
+    down)
+        pamixer -d 5
+        pamixer --get-volume > "${WOB_SOCK}"
+        ;;
+    mute)
+        pamixer -t
+        if pamixer --get-mute; then
+            echo 0 > "${WOB_SOCK}"
+        else
+            pamixer --get-volume > "${WOB_SOCK}"
+        fi
+        ;;
+    *)
+        echo "Usage: volume-control {up|down|mute}"
+        exit 1
+        ;;
+esac
