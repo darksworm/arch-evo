@@ -1,5 +1,10 @@
 export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
+# mise (version manager for java, node, python, etc.)
+if command -v mise &>/dev/null; then
+    eval "$(mise activate zsh)"
+fi
+
 # Lazy-load direnv: only initialize when entering a directory with .envrc
 _direnv_hook_initialized=0
 

@@ -1,7 +1,7 @@
 export EDITOR=nvim
 export VISUAL=nvim
 export TERMINAL=foot
-export BROWSER=brave
+export BROWSER=zen-browser
 
 # XDG
 export XDG_CONFIG_HOME="${HOME}/.config"

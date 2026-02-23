@@ -7,13 +7,12 @@ section "Utility Scripts"
 
 mkdir -p "${HOME}/.local/bin"
 
-# Deploy all bin scripts
+# Symlink all bin scripts
 for script in "${BIN_DIR}"/*; do
     [[ -f "${script}" ]] || continue
     dest="${HOME}/.local/bin/$(basename "${script}")"
-    cp "${script}" "${dest}"
-    chmod +x "${dest}"
-    log "Deployed: $(basename "${script}")"
+    ln -sf "${script}" "${dest}"
+    log "Linked: $(basename "${script}")"
 done
 
 log "Utility scripts deployed to ~/.local/bin"

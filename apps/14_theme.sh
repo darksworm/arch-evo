@@ -8,7 +8,7 @@ section "Theme & Appearance"
 pac_install ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 
 ensure_yay
-yay_install catppuccin-gtk-theme-mocha papirus-icon-theme bibata-cursor-theme
+yay_install adw-gtk3 papirus-icon-theme bibata-cursor-theme-bin
 
 # GTK 3 settings
 deploy_config "${CONF_DIR}/gtk-3.0/settings.ini" "${HOME}/.config/gtk-3.0/settings.ini"

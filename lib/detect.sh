@@ -2,7 +2,7 @@
 # Hardware and environment detection utilities
 
 is_docker() {
-    [[ -f /.dockerenv ]] || [[ "${INSTALLER_MODE}" == "docker" ]]
+    [[ -f /.dockerenv ]] || [[ "${INSTALLER_MODE:-}" == "docker" ]]
 }
 
 is_efi() {

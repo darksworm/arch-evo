@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-# Backlight control with wob feedback
+# Backlight control with dunstify OSD feedback
 # Usage: backlight-control {up|down}
 set -euo pipefail
-
-WOB_SOCK="/tmp/wob.sock"
 
 case "${1:-}" in
     up)
@@ -18,4 +16,6 @@ case "${1:-}" in
         ;;
 esac
 
-brightnessctl -m | cut -d, -f4 | tr -d '%' > "${WOB_SOCK}"
+brightness=$(brightnessctl -m | cut -d, -f4 | tr -d '%')
+dunstify -a "brightness" -u low -h string:x-dunst-stack-tag:brightness \
+    -h int:value:"$brightness" "󰃟 Brightness: ${brightness}%" -t 1500

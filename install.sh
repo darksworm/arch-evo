@@ -4,6 +4,19 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# ── Copy repo locally if running from a 9p mount ────────────────
+# Bash can lose access to the script mid-execution on 9p/network mounts
+if [[ "${ARCH_EVO_LOCAL:-}" != "1" ]] && mountpoint -q "$(df --output=target "$SCRIPT_DIR" 2>/dev/null | tail -1)" 2>/dev/null; then
+    LOCAL_DIR="/root/arch-evo-local"
+    echo "[INFO] Copying repo to $LOCAL_DIR to avoid 9p read errors..."
+    rm -rf "$LOCAL_DIR"
+    mkdir -p "$LOCAL_DIR"
+    tar -C "$SCRIPT_DIR" --exclude='.git' --exclude='test' -cf - . | tar -C "$LOCAL_DIR" -xf -
+    echo "[INFO] Re-launching from local copy."
+    exec env ARCH_EVO_LOCAL=1 bash "$LOCAL_DIR/install.sh" "$@"
+fi
+
 source "${SCRIPT_DIR}/.config"
 
 # ── Docker mode: skip hardware install ──────────────────────────
@@ -22,7 +35,20 @@ if [[ "$(id -u)" -ne 0 ]]; then
     die "This script must be run as root"
 fi
 
-pacman -Sy --noconfirm dialog
+# ── Pacman config: mirrors & parallel downloads ──────────────────
+cat > /etc/pacman.d/mirrorlist <<'MIRRORS'
+Server = https://mirrors.dotsrc.org/archlinux/$repo/os/$arch
+Server = https://mirror.one.com/archlinux/$repo/os/$arch
+Server = https://ftp.acc.umu.se/mirror/archlinux/$repo/os/$arch
+Server = https://mirror.archlinux.no/$repo/os/$arch
+Server = https://ftp.fau.de/archlinux/$repo/os/$arch
+MIRRORS
+
+sed -i 's/^#ParallelDownloads.*/ParallelDownloads = 5/' /etc/pacman.conf
+
+pacman-key --init
+pacman-key --populate archlinux
+pacman -Sy --noconfirm archlinux-keyring dialog
 
 # ── Welcome ─────────────────────────────────────────────────────
 dialog_msg "arch-evo Installer" \
@@ -130,16 +156,16 @@ mkfs.ext4 /dev/mapper/cryptroot
 section "Mounting Filesystems"
 
 mount /dev/mapper/cryptroot /mnt
-mkdir -p /mnt/boot/efi
-mount "${PART_EFI}" /mnt/boot/efi
+mkdir -p /mnt/boot
+mount "${PART_EFI}" /mnt/boot
 
 # ── Pacstrap ───────────────────────────────────────────────────
 section "Installing Base System"
 
 PACSTRAP_PACKAGES=(
     base base-devel linux linux-firmware
-    vim sudo git networkmanager
-    grub efibootmgr os-prober
+    neovim sudo git networkmanager openssh
+    efibootmgr
     dialog
 )
 
@@ -150,6 +176,11 @@ fi
 log "Running pacstrap..."
 pacstrap /mnt "${PACSTRAP_PACKAGES[@]}"
 
+# ── Copy pacman config to installed system ────────────────────
+log "Copying mirrorlist and pacman.conf to installed system..."
+cp /etc/pacman.d/mirrorlist /mnt/etc/pacman.d/mirrorlist
+cp /etc/pacman.conf /mnt/etc/pacman.conf
+
 # ── Fstab ──────────────────────────────────────────────────────
 section "Generating fstab"
 
@@ -158,7 +189,8 @@ genfstab -U /mnt >> /mnt/etc/fstab
 # ── Copy repo into chroot ─────────────────────────────────────
 log "Copying arch-evo to /mnt/opt/arch..."
 mkdir -p /mnt/opt/arch
-cp -r "${SCRIPT_DIR}/." /mnt/opt/arch/
+# Use tar to reliably copy across filesystem boundaries (e.g. 9p mounts)
+tar -C "${SCRIPT_DIR}" --exclude='.git' --exclude='test' -cf - . | tar -C /mnt/opt/arch -xf -
 
 # ── Export variables for chroot ────────────────────────────────
 cat > /mnt/opt/arch/.install-vars <<EOF

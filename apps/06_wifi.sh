@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
-# WiFi (NetworkManager already installed in chroot)
+# WiFi & networking (NetworkManager already installed in chroot)
 set -euo pipefail
 source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 
-section "WiFi"
+section "Networking"
+
+# iPhone USB tethering
+pac_install usbmuxd libimobiledevice
+enable_service usbmuxd.service
 
 enable_service NetworkManager.service
 
-log "NetworkManager enabled"
+log "NetworkManager and iPhone tethering enabled"

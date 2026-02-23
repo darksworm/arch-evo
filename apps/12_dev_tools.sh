@@ -7,16 +7,19 @@ section "Development Tools"
 
 pac_install \
     go cmake ninja \
-    docker docker-compose \
+    docker \
     kubectl helm k9s \
     ripgrep fzf jq git-delta git-lfs github-cli \
-    python pyenv wget httpie parallel ffmpeg mkcert \
-    jdk11-openjdk jdk17-openjdk jdk21-openjdk
+    python wget httpie parallel ffmpeg mkcert \
+    mise kustomize krew dive uv ghq
 
 ensure_yay
-yay_install \
-    fnm kustomize krew \
-    aws-cli-v2 dive trivy act uv jenv
+yay_install aws-cli-bin trivy-bin act-bin
+
+# Claude Code (Anthropic's native installer — auto-updates)
+if ! command -v claude &>/dev/null; then
+    run_as_user "${USERNAME}" "curl -fsSL https://claude.ai/install.sh | bash"
+fi
 
 # Deploy k9s skin
 deploy_config "${CONF_DIR}/k9s/skin.yaml" "${HOME}/.config/k9s/skins/skin.yaml"

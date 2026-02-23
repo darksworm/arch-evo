@@ -5,7 +5,7 @@ source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 
 section "Docker"
 
-pac_install docker docker-compose
+pac_install docker
 
 # Add current user to docker group
 sudo usermod -aG docker "${USER}"

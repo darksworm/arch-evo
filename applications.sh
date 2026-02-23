@@ -102,12 +102,15 @@ for script in "${scripts[@]}"; do
 
     section "Running: ${script_name}"
 
-    if bash "${script}"; then
+    if bash "${script}" 2>&1; then
         mark_completed "${script_name}"
         log "Completed: ${script_name}"
     else
         error "Failed: ${script_name}"
         if ! is_docker; then
+            echo ""
+            echo ">>> Press ENTER to continue <<<"
+            read -r
             dialog_yesno "Script Failed" "${script_name} failed.\n\nContinue with remaining scripts?" || die "Aborted by user"
         else
             warn "Continuing despite failure (Docker mode)..."
