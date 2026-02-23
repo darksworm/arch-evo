@@ -48,15 +48,33 @@ mkinitcpio -P
 log "Initramfs rebuilt with encrypt hook"
 
 # ── Bootloader ─────────────────────────────────────────────────
-section "Bootloader (GRUB)"
+section "Bootloader (systemd-boot)"
 
-grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=GRUB
+bootctl install
 
-# Configure GRUB for LUKS
 CRYPT_UUID=$(blkid -s UUID -o value "${PART_ROOT}")
-sed -i "s|^GRUB_CMDLINE_LINUX=\"\"|GRUB_CMDLINE_LINUX=\"cryptdevice=UUID=${CRYPT_UUID}:cryptroot root=/dev/mapper/cryptroot\"|" /etc/default/grub
-grub-mkconfig -o /boot/grub/grub.cfg
-log "GRUB installed and configured with LUKS"
+
+# Detect microcode image
+UCODE_IMG=""
+[[ -f /boot/intel-ucode.img ]] && UCODE_IMG="intel-ucode.img"
+[[ -f /boot/amd-ucode.img ]] && UCODE_IMG="amd-ucode.img"
+
+cat > /boot/loader/loader.conf <<EOF
+default arch.conf
+timeout 3
+console-mode max
+editor no
+EOF
+
+cat > /boot/loader/entries/arch.conf <<ENTRY
+title   Arch Linux
+linux   /vmlinuz-linux
+$([ -n "${UCODE_IMG}" ] && echo "initrd  /${UCODE_IMG}")
+initrd  /initramfs-linux.img
+options cryptdevice=UUID=${CRYPT_UUID}:cryptroot root=/dev/mapper/cryptroot rw
+ENTRY
+
+log "systemd-boot installed and configured with LUKS"
 
 # ── Root Password ──────────────────────────────────────────────
 section "Root Password"
@@ -67,7 +85,7 @@ log "Root password set"
 # ── User Setup ─────────────────────────────────────────────────
 section "User: ${INSTALL_USER}"
 
-useradd -m -G wheel,docker -s /bin/bash "${INSTALL_USER}"
+useradd -m -G wheel -s /bin/bash "${INSTALL_USER}"
 echo "${INSTALL_USER}:${USER_PASSWORD}" | chpasswd
 
 # Enable wheel group sudo
@@ -79,6 +97,15 @@ section "Services"
 
 systemctl enable NetworkManager
 log "NetworkManager enabled"
+
+# Auto-login on tty1 (zprofile launches MangoWC)
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+cat > /etc/systemd/system/getty@tty1.service.d/autologin.conf <<EOF
+[Service]
+ExecStart=
+ExecStart=-/usr/bin/agetty --autologin ${INSTALL_USER} --noclear %I \$TERM
+EOF
+log "Auto-login on tty1 enabled for ${INSTALL_USER}"
 
 # ── Clone repo for user ───────────────────────────────────────
 section "Application Setup"

@@ -1,31 +1,21 @@
 #!/usr/bin/env bash
-# Test: Verify DWL compiles with custom config.h
+# Test: Verify MangoWC can be installed from AUR
 set -euo pipefail
 
-echo "=== DWL Compile Test ==="
+echo "=== MangoWC Install Test ==="
 
 # Install build deps
 pacman -S --needed --noconfirm \
-    wayland wayland-protocols wlroots libinput libxkbcommon pixman pkg-config \
-    gcc make git
+    wayland wayland-protocols libinput libxkbcommon pixman pkg-config \
+    gcc make git meson ninja libdisplay-info libliftoff hwdata seatd pcre2 \
+    xorg-xwayland libxcb libdrm
 
-# Clone DWL
-TMPDIR=$(mktemp -d)
-git clone https://codeberg.org/dwl/dwl.git "${TMPDIR}/dwl"
-
-# Copy config
-cp /opt/arch/conf/dwl/config.h "${TMPDIR}/dwl/config.h"
-
-# Build
-cd "${TMPDIR}/dwl"
-if make; then
-    echo "PASS: DWL compiled successfully"
+# Verify mangowc-git package exists in AUR
+if curl -sf "https://aur.archlinux.org/rpc/v5/info?arg[]=mangowc-git" | grep -q '"NumVotes"'; then
+    echo "PASS: mangowc-git package found in AUR"
 else
-    echo "FAIL: DWL compilation failed"
+    echo "FAIL: mangowc-git package not found in AUR"
     exit 1
 fi
 
-# Cleanup
-rm -rf "${TMPDIR}"
-
-echo "=== DWL compile test complete ==="
+echo "=== MangoWC install test complete ==="

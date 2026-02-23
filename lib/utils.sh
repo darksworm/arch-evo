@@ -38,8 +38,11 @@ pac_install() {
 
 yay_install() {
     local packages=("$@")
+    local builddir="/tmp/yay-build"
+    mkdir -p "${builddir}"
+    chown "${USERNAME}:${USERNAME}" "${builddir}"
     log "Installing (yay): ${packages[*]}"
-    yay -S --needed --noconfirm "${packages[@]}"
+    sudo -u "${USERNAME}" yay --builddir "${builddir}" -S --needed --noconfirm --nocleanmenu --nodiffmenu --noremovemake "${packages[@]}"
 }
 
 ensure_yay() {
@@ -47,8 +50,9 @@ ensure_yay() {
         log "Installing yay AUR helper..."
         local tmpdir
         tmpdir=$(mktemp -d)
-        git clone https://aur.archlinux.org/yay-bin.git "${tmpdir}/yay-bin"
-        (cd "${tmpdir}/yay-bin" && makepkg -si --noconfirm)
+        chmod 777 "${tmpdir}"
+        sudo -u "${USERNAME}" git clone https://aur.archlinux.org/yay-bin.git "${tmpdir}/yay-bin"
+        (cd "${tmpdir}/yay-bin" && sudo -u "${USERNAME}" makepkg -si --noconfirm)
         rm -rf "${tmpdir}"
     fi
 }
@@ -66,20 +70,18 @@ deploy_config() {
     dest_dir=$(dirname "${dest}")
     mkdir -p "${dest_dir}"
 
-    if [[ -d "${src}" ]]; then
-        cp -r "${src}/." "${dest}/"
-    else
-        cp "${src}" "${dest}"
-    fi
-    log "Deployed: ${src} → ${dest}"
+    ln -sfn "${src}" "${dest}"
+    log "Linked: ${src} → ${dest}"
 }
 
 deploy_config_dir() {
     local src_dir="$1"
     local dest_dir="$2"
-    mkdir -p "${dest_dir}"
-    cp -r "${src_dir}/." "${dest_dir}/"
-    log "Deployed directory: ${src_dir} → ${dest_dir}"
+    local parent_dir
+    parent_dir=$(dirname "${dest_dir}")
+    mkdir -p "${parent_dir}"
+    ln -sfn "${src_dir}" "${dest_dir}"
+    log "Linked directory: ${src_dir} → ${dest_dir}"
 }
 
 enable_service() {
@@ -99,7 +101,16 @@ enable_user_service() {
         return 0
     fi
     log "Enabling user service: ${service}"
-    systemctl --user enable "${service}"
+    if [[ "$(id -u)" -eq 0 ]]; then
+        local user_home
+        user_home=$(eval echo "~${USERNAME}")
+        local wants_dir="${user_home}/.config/systemd/user/default.target.wants"
+        mkdir -p "${wants_dir}"
+        chown -R "${USERNAME}:${USERNAME}" "${user_home}/.config/systemd"
+        ln -sfn "/usr/lib/systemd/user/${service}" "${wants_dir}/${service}"
+    else
+        systemctl --user enable "${service}"
+    fi
 }
 
 mark_completed() {

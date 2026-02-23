@@ -5,6 +5,6 @@ source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 
 section "Wayland Base"
 
-pac_install wayland wayland-protocols wlroots libinput xorg-xwayland
+pac_install wayland wayland-protocols libinput xorg-xwayland
 
 log "Wayland base packages installed"

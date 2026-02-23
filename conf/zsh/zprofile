@@ -1,14 +1,4 @@
 # Launch Wayland session from tty1
 if [ "$(tty)" = "/dev/tty1" ] && [ -z "$WAYLAND_DISPLAY" ]; then
-    export XDG_SESSION_TYPE=wayland
-    export XDG_CURRENT_DESKTOP=dwl
-    export MOZ_ENABLE_WAYLAND=1
-    export QT_QPA_PLATFORM=wayland
-    export SDL_VIDEODRIVER=wayland
-    export _JAVA_AWT_WM_NONREPARENTING=1
-    export CLUTTER_BACKEND=wayland
-    export ECORE_EVAS_ENGINE=wayland-egl
-    export ELM_ENGINE=wayland_egl
-    export NO_AT_BRIDGE=1
-    exec dwl -s "sh ~/.local/bin/autostart.sh"
+    exec mango
 fi

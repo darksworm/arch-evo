@@ -17,5 +17,5 @@ fi
 
 log "Cleanup complete"
 log ""
-log "Installation finished! Reboot to start using DWL."
-log "After reboot, log in on tty1 — DWL starts automatically."
+log "Installation finished! Reboot to start using MangoWC."
+log "After reboot, MangoWC starts automatically via tty1 autologin."
