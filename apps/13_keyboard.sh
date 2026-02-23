@@ -7,9 +7,9 @@ section "Keyboard Remapping"
 
 pac_install interception-tools interception-caps2esc
 
-# Deploy udevmon config
+# Deploy udevmon config (system directory, needs sudo)
 sudo mkdir -p /etc/interception
-deploy_config "${CONF_DIR}/interception/udevmon.yaml" "/etc/interception/udevmon.yaml"
+sudo ln -sfn "${CONF_DIR}/interception/udevmon.yaml" "/etc/interception/udevmon.yaml"
 
 enable_service udevmon.service
 
