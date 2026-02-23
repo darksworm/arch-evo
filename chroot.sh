@@ -89,7 +89,7 @@ useradd -m -G wheel -s /bin/bash "${INSTALL_USER}"
 echo "${INSTALL_USER}:${USER_PASSWORD}" | chpasswd
 
 # Enable wheel group sudo
-sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+sed -i 's/^# %wheel ALL=(ALL:ALL) NOPASSWD: ALL/%wheel ALL=(ALL:ALL) NOPASSWD: ALL/' /etc/sudoers
 log "User ${INSTALL_USER} created and added to wheel group"
 
 # ── Services ───────────────────────────────────────────────────
@@ -106,6 +106,10 @@ ExecStart=
 ExecStart=-/usr/bin/agetty --autologin ${INSTALL_USER} --noclear %I \$TERM
 EOF
 log "Auto-login on tty1 enabled for ${INSTALL_USER}"
+
+# ── Prepare state directory ────────────────────────────────────
+mkdir -p /var/lib/arch-evo/completed
+chown "${INSTALL_USER}:${INSTALL_USER}" /var/lib/arch-evo/completed
 
 # ── Clone repo for user ───────────────────────────────────────
 section "Application Setup"

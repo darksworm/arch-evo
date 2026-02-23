@@ -2,13 +2,13 @@
 #
 # vm-setup.sh — Create and boot a QEMU x86_64 VM for arch-evo testing
 #
-# Uses QEMU TCG (software emulation) to run an x86_64 Arch ISO on Apple Silicon.
+# Uses QEMU TCG (multi-threaded) to run an x86_64 Arch ISO on Apple Silicon.
 # Boots in UEFI mode with NAT + SSH port forwarding on port 2222.
 #
 # Usage:
 #   ./test/vm-setup.sh              # Headless: boot, auto-configure SSH, wait
 #   ./test/vm-setup.sh --interactive # Foreground with serial console attached
-#   ./test/vm-setup.sh --gui         # Graphical window (for testing DWL/Wayland)
+#   ./test/vm-setup.sh --gui         # Graphical window (for testing MangoWC/Wayland)
 
 set -euo pipefail
 
@@ -71,13 +71,13 @@ fi
 # Common QEMU arguments
 QEMU_ARGS=(
     -machine q35
-    -accel tcg
+    -accel tcg,thread=multi,tb-size=2048
     -cpu qemu64
     -m 8192
     -smp 6
     -drive "if=pflash,format=raw,readonly=on,file=$OVMF"
     -drive "if=pflash,format=raw,file=$EFIVARS"
-    -drive "file=$DISK,format=qcow2,if=virtio"
+    -drive "file=$DISK,format=qcow2,if=virtio,cache=writeback,discard=unmap"
     -cdrom "$ISO"
     -boot d
     -netdev "user,id=net0,hostfwd=tcp::${SSH_PORT}-:22"
@@ -133,7 +133,7 @@ fi
 
 # ── Headless mode ─────────────────────────────────────────────────
 
-echo "Starting QEMU VM (headless, x86_64 via TCG)..."
+echo "Starting QEMU VM (headless, x86_64 via TCG multi-threaded)..."
 
 # Clean up old FIFO/log
 rm -f "$SERIAL_FIFO" "$CONSOLE_LOG"

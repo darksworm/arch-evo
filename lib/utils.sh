@@ -42,7 +42,7 @@ yay_install() {
     mkdir -p "${builddir}"
     chown "${USERNAME}:${USERNAME}" "${builddir}"
     log "Installing (yay): ${packages[*]}"
-    sudo -u "${USERNAME}" yay --builddir "${builddir}" -S --needed --noconfirm --nocleanmenu --nodiffmenu --noremovemake "${packages[@]}"
+    sudo -u "${USERNAME}" yay --builddir "${builddir}" -S --needed --noconfirm --cleanmenu=false --diffmenu=false --removemake=false "${packages[@]}"
 }
 
 ensure_yay() {
@@ -101,7 +101,8 @@ enable_user_service() {
         return 0
     fi
     log "Enabling user service: ${service}"
-    if [[ "$(id -u)" -eq 0 ]]; then
+    # In chroot or without a user session, symlink manually
+    if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]] || [[ "$(id -u)" -eq 0 ]]; then
         local user_home
         user_home=$(eval echo "~${USERNAME}")
         local wants_dir="${user_home}/.config/systemd/user/default.target.wants"
