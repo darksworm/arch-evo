@@ -28,6 +28,9 @@ for f in "${CONF_DIR}"/nvim/lua/config/*.lua; do
     deploy_config "${f}" "${NVIM_DIR}/lua/config/$(basename "${f}")"
 done
 
+# Deploy lazyvim.json (extras configuration)
+deploy_config "${CONF_DIR}/nvim/lazyvim.json" "${NVIM_DIR}/lazyvim.json"
+
 # Run headless plugin install
 log "Installing neovim plugins (headless)..."
 nvim --headless "+Lazy! sync" +qa 2>/dev/null || warn "Headless plugin install may need manual run"
