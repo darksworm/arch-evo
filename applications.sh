@@ -58,7 +58,7 @@ fi
 # Filter and run
 for script in "${scripts[@]}"; do
     script_name=$(basename "${script}")
-    script_num="${script_name%%_*}"
+    script_num="$((10#${script_name%%_*}))"
 
     # --only mode
     if [[ -n "${ONLY_SCRIPT:-}" ]] && [[ "${script_num}" != "${ONLY_SCRIPT}" ]]; then
@@ -102,20 +102,34 @@ for script in "${scripts[@]}"; do
 
     section "Running: ${script_name}"
 
-    if bash "${script}" 2>&1; then
-        mark_completed "${script_name}"
-        log "Completed: ${script_name}"
-    else
-        error "Failed: ${script_name}"
-        if ! is_docker; then
+    while true; do
+        if bash "${script}" 2>&1; then
+            mark_completed "${script_name}"
+            log "Completed: ${script_name}"
+            break
+        else
+            error "Failed: ${script_name}"
+            if is_docker; then
+                warn "Continuing despite failure (Docker mode)..."
+                break
+            fi
+
             echo ""
             echo ">>> Press ENTER to continue <<<"
             read -r
-            dialog_yesno "Script Failed" "${script_name} failed.\n\nContinue with remaining scripts?" || die "Aborted by user"
-        else
-            warn "Continuing despite failure (Docker mode)..."
+
+            dialog_menu "Script Failed" "${script_name} failed. What do you want to do?" \
+                "retry" "Retry this script" \
+                "skip"  "Skip and continue" \
+                "abort" "Abort installation"
+
+            case "${_dialog_result}" in
+                retry) log "Retrying ${script_name}..." ;;
+                skip)  log "Skipping ${script_name}"; break ;;
+                *)     die "Aborted by user" ;;
+            esac
         fi
-    fi
+    done
 done
 
 section "All application scripts finished"

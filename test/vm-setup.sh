@@ -71,10 +71,10 @@ fi
 # Common QEMU arguments
 QEMU_ARGS=(
     -machine q35
-    -accel tcg,thread=multi,tb-size=2048
+    -accel tcg,tb-size=2048
     -cpu qemu64
     -m 8192
-    -smp 6
+    -smp 1
     -drive "if=pflash,format=raw,readonly=on,file=$OVMF"
     -drive "if=pflash,format=raw,file=$EFIVARS"
     -drive "file=$DISK,format=qcow2,if=virtio,cache=writeback,discard=unmap"

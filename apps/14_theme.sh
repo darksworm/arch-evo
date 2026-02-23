@@ -17,9 +17,8 @@ deploy_config "${CONF_DIR}/gtk-3.0/settings.ini" "${HOME}/.config/gtk-3.0/settin
 deploy_config "${CONF_DIR}/gtk-4.0/settings.ini" "${HOME}/.config/gtk-4.0/settings.ini"
 
 # Deploy wallpapers
-mkdir -p "${HOME}/.local/share/wallpapers"
-if [[ -d "${REPO_DIR}/static/wallpapers" ]] && ls "${REPO_DIR}/static/wallpapers/"* &>/dev/null; then
-    cp "${REPO_DIR}/static/wallpapers/"* "${HOME}/.local/share/wallpapers/"
+if [[ -d "${REPO_DIR}/static/wallpapers" ]]; then
+    ln -sfn "${REPO_DIR}/static/wallpapers" "${HOME}/.local/share/wallpapers"
 fi
 
 log "Theme and appearance configured"

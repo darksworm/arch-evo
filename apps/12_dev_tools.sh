@@ -11,10 +11,8 @@ pac_install \
     kubectl helm k9s \
     ripgrep fzf jq git-delta git-lfs github-cli \
     python wget httpie parallel ffmpeg mkcert \
-    mise kustomize krew dive uv ghq
-
-ensure_yay
-yay_install aws-cli-bin trivy-bin act-bin
+    mise kustomize krew dive uv ghq \
+    aws-cli-v2
 
 # Claude Code (Anthropic's native installer — auto-updates)
 if ! command -v claude &>/dev/null; then
