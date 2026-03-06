@@ -96,11 +96,6 @@ if [[ "${ENABLE_SECURE_BOOT:-0}" -eq 1 ]]; then
     log "Signing kernel..."
     sbctl sign -s /boot/vmlinuz-linux
 
-    if [[ -n "${UCODE_IMG}" ]]; then
-        log "Signing microcode..."
-        sbctl sign -s "/boot/${UCODE_IMG}"
-    fi
-
     log "Verifying signed files..."
     sbctl verify
 
