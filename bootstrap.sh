@@ -12,6 +12,4 @@ pacman -Sy --noconfirm git
 
 git clone "${REPO}" "${DEST}"
 
-echo ""
-echo "Ready! Run the installer:"
-echo "  cd ${DEST} && bash install.sh"
+exec bash "${DEST}/install.sh"
