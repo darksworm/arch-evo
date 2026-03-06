@@ -144,4 +144,8 @@ section "Application Setup"
 log "Repo available at /opt/arch"
 log "Run 'sudo bash /opt/arch/applications.sh' after first boot to install applications"
 
+if dialog_yesno "Application Setup" "Install applications now?\n\nRequires a working internet connection.\n\n(You can also skip and run it after first boot)"; then
+    bash /opt/arch/applications.sh
+fi
+
 section "Chroot setup complete"
