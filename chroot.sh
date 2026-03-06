@@ -83,6 +83,9 @@ if [[ "${ENABLE_SECURE_BOOT:-0}" -eq 1 ]]; then
     log "Creating Secure Boot signing keys..."
     sbctl create-keys
 
+    log "Removing immutable flag from efivarfs..."
+    chattr -i /sys/firmware/efi/efivars/* 2>/dev/null || true
+
     log "Enrolling keys (including Microsoft keys for hardware compatibility)..."
     sbctl enroll-keys -m
 
