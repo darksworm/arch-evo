@@ -1,15 +1,1 @@
-#!/usr/bin/env bash
-# arch-evo bootstrap — run from a live Arch ISO
-# bash <(curl -sL darksworm.github.io/arch-evo)
-set -euo pipefail
-
-REPO="https://github.com/darksworm/arch-evo.git"
-DEST="/opt/arch"
-
-echo "=== arch-evo bootstrap ==="
-
-pacman -Sy --noconfirm git
-
-git clone "${REPO}" "${DEST}"
-
-exec bash "${DEST}/install.sh"
+bootstrap.sh
