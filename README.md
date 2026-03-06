@@ -7,5 +7,5 @@ Arch Linux installer with MangoWC Wayland compositor.
 Boot from an Arch ISO, then:
 
 ```
-bash <(curl -sL darksworm.github.io/arch-evo/bootstrap.sh)
+bash <(curl -sL darksworm.github.io/arch-evo)
 ```
