@@ -76,6 +76,35 @@ ENTRY
 
 log "systemd-boot installed and configured with LUKS"
 
+# ── Secure Boot ────────────────────────────────────────────────
+if [[ "${ENABLE_SECURE_BOOT:-0}" -eq 1 ]]; then
+    section "Secure Boot (sbctl)"
+
+    log "Creating Secure Boot signing keys..."
+    sbctl create-keys
+
+    log "Enrolling keys (including Microsoft keys for hardware compatibility)..."
+    sbctl enroll-keys -m
+
+    log "Signing bootloader binaries..."
+    sbctl sign -s /boot/EFI/systemd/systemd-bootx64.efi
+    sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
+
+    log "Signing kernel..."
+    sbctl sign -s /boot/vmlinuz-linux
+
+    if [[ -n "${UCODE_IMG}" ]]; then
+        log "Signing microcode..."
+        sbctl sign -s "/boot/${UCODE_IMG}"
+    fi
+
+    log "Verifying signed files..."
+    sbctl verify
+
+    log "Secure Boot keys enrolled and all binaries signed."
+    warn "After first boot: enter BIOS/UEFI and ENABLE Secure Boot to activate."
+fi
+
 # ── Root Password ──────────────────────────────────────────────
 section "Root Password"
 
@@ -116,10 +145,5 @@ section "Application Setup"
 
 log "Repo available at /opt/arch"
 log "Run 'sudo bash /opt/arch/applications.sh' after first boot to install applications"
-
-# Optionally run applications.sh now
-if dialog_yesno "Application Setup" "Install applications now?\n\n(You can also do this after first boot)"; then
-    sudo -u "${INSTALL_USER}" bash /opt/arch/applications.sh
-fi
 
 section "Chroot setup complete"

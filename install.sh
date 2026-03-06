@@ -104,6 +104,17 @@ USER_PASSWORD="${_dialog_result}"
 dialog_password_confirm "Root Password" "Enter root password:" || die "Cancelled"
 ROOT_PASSWORD="${_dialog_result}"
 
+# ── Secure Boot ─────────────────────────────────────────────────
+ENABLE_SECURE_BOOT=0
+if dialog_yesno "Secure Boot" "Enable Secure Boot?\n\n\
+Uses sbctl to create your own signing keys and sign the bootloader and kernel.\n\n\
+⚠ PREREQUISITE: Before running this installer you must enter your BIOS/UEFI and:\n\
+  1. Delete / clear existing Secure Boot keys\n\
+  2. Put firmware into 'Setup Mode'\n\n\
+After first boot you will also need to ENABLE Secure Boot in BIOS."; then
+    ENABLE_SECURE_BOOT=1
+fi
+
 # ── Confirmation ────────────────────────────────────────────────
 UCODE=$(get_ucode_package)
 PART_EFI=$(get_disk_partition "${INSTALL_DISK}" 1)
@@ -118,6 +129,7 @@ dialog_summary "Confirm Installation" \
     "CPU Microcode: ${UCODE:-none}" \
     "Timezone:      ${TIMEZONE}" \
     "Locale:        ${LOCALE_MAIN}" \
+    "Secure Boot:   $([[ "${ENABLE_SECURE_BOOT}" -eq 1 ]] && echo "enabled (sbctl)" || echo "disabled")" \
     "" \
     "⚠ This will DESTROY all data on ${INSTALL_DISK}!" \
     || die "Installation cancelled by user"
@@ -173,6 +185,10 @@ if [[ -n "${UCODE}" ]]; then
     PACSTRAP_PACKAGES+=("${UCODE}")
 fi
 
+if [[ "${ENABLE_SECURE_BOOT}" -eq 1 ]]; then
+    PACSTRAP_PACKAGES+=(sbctl)
+fi
+
 log "Running pacstrap..."
 pacstrap /mnt "${PACSTRAP_PACKAGES[@]}"
 
@@ -200,6 +216,7 @@ USER_PASSWORD="${USER_PASSWORD}"
 ROOT_PASSWORD="${ROOT_PASSWORD}"
 INSTALL_DISK="${INSTALL_DISK}"
 PART_ROOT="${PART_ROOT}"
+ENABLE_SECURE_BOOT="${ENABLE_SECURE_BOOT}"
 TIMEZONE="${TIMEZONE}"
 LOCALE_MAIN="${LOCALE_MAIN}"
 LOCALE_EXTRA="${LOCALE_EXTRA}"
