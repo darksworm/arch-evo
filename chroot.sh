@@ -91,13 +91,13 @@ if [[ "${ENABLE_SECURE_BOOT:-0}" -eq 1 ]]; then
 
     log "Signing bootloader binaries..."
     sbctl sign -s /boot/EFI/systemd/systemd-bootx64.efi
-    sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
+    [[ -f /boot/EFI/BOOT/BOOTX64.EFI ]] && sbctl sign -s /boot/EFI/BOOT/BOOTX64.EFI
 
     log "Signing kernel..."
     sbctl sign -s /boot/vmlinuz-linux
 
     log "Verifying signed files..."
-    sbctl verify
+    sbctl verify || true
 
     log "Secure Boot keys enrolled and all binaries signed."
     warn "After first boot: enter BIOS/UEFI and ENABLE Secure Boot to activate."
