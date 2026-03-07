@@ -7,7 +7,8 @@ set -euo pipefail
 # config deployments target the right account. Internal scripts call sudo
 # themselves for privileged operations.
 if [[ $EUID -eq 0 ]] && [[ -n "${SUDO_USER:-}" ]]; then
-    exec sudo -u "${SUDO_USER}" -E bash "$0" "$@"
+    USER_HOME=$(getent passwd "${SUDO_USER}" | cut -d: -f6)
+    exec sudo -u "${SUDO_USER}" HOME="${USER_HOME}" bash "$0" "$@"
 fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
