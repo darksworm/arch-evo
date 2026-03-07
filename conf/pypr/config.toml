@@ -26,7 +26,7 @@ position = "13% 7%"
 lazy = true
 
 [scratchpads.linear]
-command = "linear-desktop"
+command = "linear-linux"
 class = "linear"
 size = "75% 87%"
 position = "13% 7%"
