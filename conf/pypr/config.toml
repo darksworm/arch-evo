@@ -12,7 +12,7 @@ position = "13% 7%"
 lazy = true
 
 [scratchpads.discord]
-command = "discord --skip-update"
+command = "discord"
 class = "discord"
 size = "75% 87%"
 position = "13% 7%"
@@ -27,7 +27,7 @@ lazy = true
 
 [scratchpads.linear]
 command = "linear-linux"
-class = "linear"
+class = "linear-linux"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
