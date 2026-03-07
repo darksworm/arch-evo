@@ -12,7 +12,7 @@ position = "13% 7%"
 lazy = true
 
 [scratchpads.discord]
-command = "discord"
+command = "discord --skip-update"
 class = "discord"
 size = "75% 87%"
 position = "13% 7%"
