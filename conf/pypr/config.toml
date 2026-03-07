@@ -6,7 +6,7 @@ plugins = ["scratchpads"]
 
 [scratchpads.slack]
 command = "slack"
-class = "slack"
+class = "Slack"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
@@ -20,7 +20,7 @@ lazy = true
 
 [scratchpads.spotify]
 command = "spotify"
-class = "Spotify"
+class = "spotify"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
