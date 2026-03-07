@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
-# Keyboard remapping: Caps Lock → Escape (tap) / Ctrl (hold)
+# Keyboard remapping via keyd: Caps Lock → Esc (tap) / Hyper (hold)
+# Hyper = Ctrl+Alt+Super, used for app scratchpad binds in Hyprland
 set -euo pipefail
 source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 
 section "Keyboard Remapping"
 
-pac_install interception-tools interception-caps2esc
+pac_install keyd
 
-# Deploy udevmon config (system directory, needs sudo)
-sudo mkdir -p /etc/interception
-sudo ln -sfn "${CONF_DIR}/interception/udevmon.yaml" "/etc/interception/udevmon.yaml"
+sudo mkdir -p /etc/keyd
+sudo ln -sfn "${CONF_DIR}/keyd/default.conf" "/etc/keyd/default.conf"
 
-enable_service udevmon.service
+enable_service keyd.service
 
-log "Keyboard remapping (caps2esc) installed and enabled"
+log "Keyboard remapping (keyd) installed: tap=Esc, hold=Hyper"
