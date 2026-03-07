@@ -8,6 +8,6 @@ section "Work Tools"
 pac_install libreoffice-fresh networkmanager-openvpn
 
 ensure_yay
-yay_install slack-desktop kubectl-argo-rollouts-bin kubelogin pritunl-client-bin
+yay_install slack-desktop kubectl-argo-rollouts-bin kubelogin pritunl-client-bin linear-app
 
 log "Work tools installed"
