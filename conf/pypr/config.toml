@@ -12,8 +12,8 @@ position = "13% 7%"
 lazy = true
 
 [scratchpads.discord]
-command = "discord"
-class = "discord"
+command = "vesktop"
+class = "vesktop"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
