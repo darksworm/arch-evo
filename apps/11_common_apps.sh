@@ -8,7 +8,7 @@ section "Common Applications"
 pac_install openssh gnupg btop acpi polkit-gnome
 
 ensure_yay
-yay_install zen-browser-bin spotify 1password vesktop-bin
+yay_install zen-browser-bin spotify 1password 1password-cli vesktop-bin
 
 # Deploy btop config
 deploy_config_dir "${CONF_DIR}/btop" "${HOME}/.config/btop"
