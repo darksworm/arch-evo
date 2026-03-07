@@ -1,6 +1,6 @@
 # arch-evo
 
-Arch Linux installer with MangoWC Wayland compositor.
+Arch Linux installer with Hyprland Wayland compositor.
 
 ## Quick Start
 

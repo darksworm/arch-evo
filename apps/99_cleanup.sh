@@ -17,8 +17,8 @@ fi
 
 log "Cleanup complete"
 log ""
-log "Installation finished! Reboot to start using MangoWC."
-log "After reboot, MangoWC starts automatically via tty1 autologin."
+log "Installation finished! Reboot to start using Hyprland."
+log "After reboot, Hyprland starts automatically via tty1 autologin."
 
 # Restore password-required sudo LAST (locks out further sudo)
 log "Restoring password-required sudo..."

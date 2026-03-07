@@ -1,21 +1,15 @@
 #!/usr/bin/env bash
-# Test: Verify MangoWC can be installed from AUR
+# Test: Verify Hyprland can be installed
 set -euo pipefail
 
-echo "=== MangoWC Install Test ==="
+echo "=== Hyprland Install Test ==="
 
-# Install build deps
-pacman -S --needed --noconfirm \
-    wayland wayland-protocols libinput libxkbcommon pixman pkg-config \
-    gcc make git meson ninja libdisplay-info libliftoff hwdata seatd pcre2 \
-    xorg-xwayland libxcb libdrm
-
-# Verify mangowc-git package exists in AUR
-if curl -sf "https://aur.archlinux.org/rpc/v5/info?arg[]=mangowc-git" | grep -q '"NumVotes"'; then
-    echo "PASS: mangowc-git package found in AUR"
+# Verify hyprland package exists in official repos
+if pacman -Si hyprland &>/dev/null; then
+    echo "PASS: hyprland package found in official repos"
 else
-    echo "FAIL: mangowc-git package not found in AUR"
+    echo "FAIL: hyprland package not found"
     exit 1
 fi
 
-echo "=== MangoWC install test complete ==="
+echo "=== Hyprland install test complete ==="

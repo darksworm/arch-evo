@@ -125,7 +125,7 @@ section "Services"
 systemctl enable NetworkManager
 log "NetworkManager enabled"
 
-# Auto-login on tty1 (zprofile launches MangoWC)
+# Auto-login on tty1 (zprofile launches Hyprland)
 mkdir -p /etc/systemd/system/getty@tty1.service.d
 cat > /etc/systemd/system/getty@tty1.service.d/autologin.conf <<EOF
 [Service]

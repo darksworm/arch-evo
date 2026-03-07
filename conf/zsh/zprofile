@@ -1,10 +1,10 @@
 # Launch Wayland session from tty1
 if [ "$(tty)" = "/dev/tty1" ] && [ -z "$WAYLAND_DISPLAY" ]; then
-    if command -v mango >/dev/null 2>&1; then
-        exec mango
+    if command -v Hyprland >/dev/null 2>&1; then
+        exec Hyprland
     else
         echo ""
-        echo "ERROR: 'mango' not found. Application setup did not complete."
+        echo "ERROR: 'Hyprland' not found. Application setup did not complete."
         echo "Run: sudo bash /opt/arch/applications.sh"
         echo ""
     fi
