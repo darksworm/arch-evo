@@ -11,6 +11,11 @@ _load_zvm() {
   if [[ $_zvm_lazy_loaded -eq 0 ]] && [[ -f "$_zvm_plugin_path" ]]; then
     _zvm_lazy_loaded=1
     export ZVM_INIT_MODE=sourcing
+    # Re-bind fzf history search after zvm loads (zvm overrides ctrl+r)
+    zvm_after_init_commands+=('
+      [[ -f /usr/share/zsh/plugins/zsh-fzf-history-search/zsh-fzf-history-search.plugin.zsh ]] &&
+        source /usr/share/zsh/plugins/zsh-fzf-history-search/zsh-fzf-history-search.plugin.zsh
+    ')
     source "$_zvm_plugin_path"
     zle vi-cmd-mode
   else
