@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Toggle a hyper scratchpad special workspace.
+# Launches the app if not already running, then toggles the workspace.
+#
+# Usage: app-toggle <workspace> <launch-cmd> [pgrep-pattern]
+#   workspace     — special workspace name (e.g. slack)
+#   launch-cmd    — command to launch the app (e.g. slack)
+#   pgrep-pattern — optional process name for pgrep (defaults to launch-cmd)
+
+WORKSPACE=$1
+LAUNCH_CMD=$2
+PGREP_PATTERN=${3:-$2}
+
+if ! pgrep -x "$PGREP_PATTERN" > /dev/null 2>&1; then
+    $LAUNCH_CMD &
+    # Wait for the window to appear before toggling
+    sleep 1
+fi
+
+hyprctl dispatch togglespecialworkspace "$WORKSPACE"
