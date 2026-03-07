@@ -10,6 +10,7 @@ class = "Slack"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
+process_tracking = false
 
 [scratchpads.discord]
 command = "vesktop"
@@ -17,6 +18,7 @@ class = "vesktop"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
+process_tracking = false
 
 [scratchpads.spotify]
 command = "spotify"
@@ -24,6 +26,7 @@ class = "spotify"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
+process_tracking = false
 
 [scratchpads.linear]
 command = "linear-linux"
@@ -31,3 +34,4 @@ class = "linear-linux"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
+process_tracking = false
