@@ -1,0 +1,33 @@
+[pyprland]
+plugins = ["scratchpads"]
+
+# 75x87% centered — mirrors AeroSpace scratchpad setup
+# lazy = true means app only launches on first keypress, not at startup
+
+[scratchpads.slack]
+command = "slack"
+class = "slack"
+size = "75% 87%"
+position = "12.5% 6.5%"
+lazy = true
+
+[scratchpads.discord]
+command = "discord"
+class = "discord"
+size = "75% 87%"
+position = "12.5% 6.5%"
+lazy = true
+
+[scratchpads.spotify]
+command = "spotify"
+class = "Spotify"
+size = "75% 87%"
+position = "12.5% 6.5%"
+lazy = true
+
+[scratchpads.linear]
+command = "linear-desktop"
+class = "linear"
+size = "75% 87%"
+position = "12.5% 6.5%"
+lazy = true

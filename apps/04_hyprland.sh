@@ -7,8 +7,12 @@ section "Hyprland Compositor"
 
 pac_install hyprland
 
-# Deploy config
+ensure_yay
+yay_install pyprland
+
+# Deploy configs
 log "Deploying Hyprland config..."
 deploy_config "${CONF_DIR}/hypr/hyprland.conf" "${HOME}/.config/hypr/hyprland.conf"
+deploy_config "${CONF_DIR}/hypr/pyprland.toml" "${HOME}/.config/hypr/pyprland.toml"
 
 log "Hyprland installed"
