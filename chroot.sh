@@ -146,6 +146,11 @@ log "Run 'sudo bash /opt/arch/applications.sh' after first boot to install appli
 
 if dialog_yesno "Application Setup" "Install applications now?\n\nRequires a working internet connection.\n\n(You can also skip and run it after first boot)"; then
     bash /opt/arch/applications.sh
+    # applications.sh runs as root so chsh only affects root; fix the install user's shell explicitly
+    if command -v zsh >/dev/null 2>&1; then
+        chsh -s "$(which zsh)" "${INSTALL_USER}"
+        log "Default shell set to zsh for ${INSTALL_USER}"
+    fi
 fi
 
 section "Chroot setup complete"
