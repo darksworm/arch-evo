@@ -8,7 +8,7 @@ section "Theme & Appearance"
 pac_install ttf-jetbrains-mono-nerd noto-fonts noto-fonts-emoji
 
 ensure_yay
-yay_install adw-gtk3 papirus-icon-theme bibata-cursor-theme-bin
+yay_install adw-gtk3 papirus-icon-theme bibata-cursor-theme-bin matuwall
 
 # GTK 3 settings
 deploy_config "${CONF_DIR}/gtk-3.0/settings.ini" "${HOME}/.config/gtk-3.0/settings.ini"
@@ -20,5 +20,8 @@ deploy_config "${CONF_DIR}/gtk-4.0/settings.ini" "${HOME}/.config/gtk-4.0/settin
 if [[ -d "${REPO_DIR}/static/wallpapers" ]]; then
     ln -sfn "${REPO_DIR}/static/wallpapers" "${HOME}/.local/share/wallpapers"
 fi
+
+# Matuwall config (wallpaper picker)
+deploy_config "${CONF_DIR}/matuwall/config.json" "${HOME}/.config/matuwall/config.json"
 
 log "Theme and appearance configured"

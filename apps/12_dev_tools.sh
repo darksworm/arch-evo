@@ -6,7 +6,7 @@ source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 section "Development Tools"
 
 pac_install \
-    go cmake ninja \
+    go cmake ninja unzip \
     docker \
     kubectl helm k9s \
     ripgrep fzf jq git-delta git-lfs github-cli \

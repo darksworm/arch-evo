@@ -1,0 +1,16 @@
+{
+  "main": {
+    "wallpaper_dir": "~/.local/share/wallpapers",
+    "thumbnail_size": 256,
+    "thumbnail_shape": "landscape",
+    "window_decorations": false,
+    "window_grid_cols": 4,
+    "window_grid_rows": 3,
+    "mouse_enabled": false,
+    "keep_ui_alive": true
+  },
+  "wall": {
+    "wall_mode_only": true,
+    "wall_awww_flags": "--transition-type center --transition-step 90 --transition-fps 60 --transition-duration 2"
+  }
+}

@@ -29,3 +29,6 @@
 
 [includeIf "gitdir:/home/ilmars/Dev/private/"]
   path = /home/ilmars/Dev/private/.gitconfig
+
+[includeIf "gitdir:/opt/arch/"]
+  path = /home/ilmars/Dev/private/.gitconfig
