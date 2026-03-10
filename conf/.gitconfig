@@ -1,0 +1,31 @@
+[core]
+  editor = /usr/bin/nvim
+  pager = delta
+
+[gpg]
+  format = ssh
+
+[user]
+  name = ilmars
+  signingKey = /home/ilmars/.ssh/id_ecdsa.pub
+
+[color]
+  diff = auto
+
+[diff]
+  tool = delta
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+
+[merge]
+  conflictStyle = zdiff3
+
+[includeIf "gitdir:/home/ilmars/Dev/penneo/"]
+  path = /home/ilmars/Dev/penneo/.gitconfig
+
+[includeIf "gitdir:/home/ilmars/Dev/private/"]
+  path = /home/ilmars/Dev/private/.gitconfig

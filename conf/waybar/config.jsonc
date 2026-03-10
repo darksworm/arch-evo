@@ -4,12 +4,24 @@
     "height": 30,
     "spacing": 8,
 
-    "modules-left": ["tags", "taskbar"],
+    "modules-left": ["hyprland/workspaces", "taskbar"],
     "modules-center": ["clock"],
     "modules-right": ["tray", "bluetooth", "network", "pulseaudio", "battery"],
 
-    "tags": {
-        "num-tags": 9
+    "hyprland/workspaces": {
+        "format": "{icon}",
+        "format-icons": {
+            "1": "term",
+            "2": "web",
+            "3": "ide",
+            "4": "util",
+            "default": ""
+        },
+        "on-click": "activate",
+        "sort-by": "number",
+        "persistent-workspaces": {
+            "*": [1, 2, 3, 4]
+        }
     },
 
     "taskbar": {
