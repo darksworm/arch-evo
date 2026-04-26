@@ -7,10 +7,19 @@ source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 
 section "SSH Agent"
 
-# Pinentry that works in graphical sessions (gpg-agent calls it for `pass`)
-pac_install pinentry
+# Pinentry (gpg-agent calls it for `pass`).
+# `gcr` is the gnome-keyring v3 lib; pinentry-gnome3 still links against
+# libgcr-base-3.so.1 even though gcr-4 is the current default — without
+# `gcr` installed alongside, pinentry-gnome3 fails with "No pinentry".
+pac_install pinentry gcr
 
 enable_user_service ssh-agent.service
+
+# Deploy gpg-agent.conf (cache TTL + dark-themed pinentry-gnome3)
+mkdir -p "${HOME}/.gnupg"
+chmod 700 "${HOME}/.gnupg"
+deploy_config "${CONF_DIR}/gnupg/gpg-agent.conf" "${HOME}/.gnupg/gpg-agent.conf"
+gpg-connect-agent reloadagent /bye >/dev/null 2>&1 || true
 
 # Drop in ~/.ssh/config with AddKeysToAgent yes — merge non-destructively
 mkdir -p "${HOME}/.ssh"
