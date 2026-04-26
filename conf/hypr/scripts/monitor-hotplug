@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Auto-disable laptop screen when external monitor is connected,
+# re-enable it when the external is unplugged.
+#
+# Listens to Hyprland IPC events — no polling, instant reaction.
+
+LAPTOP="eDP-1"
+
+is_external() { [[ "$1" != "$LAPTOP" ]]; }
+
+# Count currently connected external monitors
+count_external() {
+    hyprctl monitors -j | jq -r '.[].name' | grep -cv "^${LAPTOP}$"
+}
+
+apply() {
+    local ext_count
+    ext_count=$(count_external)
+
+    if (( ext_count > 0 )); then
+        # External present → disable laptop
+        hyprctl keyword monitor "$LAPTOP,disable"
+    else
+        # No external → enable laptop
+        hyprctl keyword monitor "$LAPTOP,preferred,auto,1"
+    fi
+}
+
+# Apply on startup (handles already-plugged-in monitors)
+sleep 1  # let Hyprland finish initial monitor setup
+apply
+
+# Listen for monitor events
+socat -U - "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while IFS= read -r line; do
+    case "$line" in
+        monitoradded\>*)
+            mon="${line#monitoradded>}"
+            if is_external "$mon"; then
+                # Small delay lets Hyprland finish configuring the new monitor
+                sleep 0.5
+                apply
+            fi
+            ;;
+        monitorremoved\>*)
+            mon="${line#monitorremoved>}"
+            if is_external "$mon"; then
+                apply
+            fi
+            ;;
+    esac
+done

@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Toggle between laptop screen and external monitor.
+# Safety: never disable the only active monitor.
+
+laptop="eDP-1"
+
+# Get list of active monitors (one name per line)
+active=$(hyprctl monitors -j | jq -r '.[].name')
+active_count=$(echo "$active" | wc -l)
+
+# Find external monitor (anything that isn't the laptop)
+external=$(echo "$active" | grep -v "^${laptop}$" | head -1)
+
+laptop_active=false
+echo "$active" | grep -q "^${laptop}$" && laptop_active=true
+
+if $laptop_active && [ -n "$external" ]; then
+    # Both active → disable laptop, keep external
+    hyprctl keyword monitor "$laptop,disable"
+elif $laptop_active && [ -z "$external" ]; then
+    # Only laptop active, no external connected → do nothing safely
+    notify-send "Monitor" "No external monitor detected"
+elif ! $laptop_active; then
+    # Laptop is off (external must be on) → enable laptop, disable external
+    hyprctl keyword monitor "$laptop,preferred,auto,auto"
+    sleep 0.5
+    # Verify laptop came up before disabling external
+    if hyprctl monitors -j | jq -r '.[].name' | grep -q "^${laptop}$"; then
+        [ -n "$external" ] && hyprctl keyword monitor "$external,disable"
+    else
+        notify-send "Monitor" "Failed to enable laptop display — keeping external"
+    fi
+fi
