@@ -5,7 +5,7 @@ source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 
 section "Common Applications"
 
-pac_install openssh gnupg btop acpi polkit-gnome libmtp gvfs-mtp yazi ffmpegthumbnailer poppler power-profiles-daemon
+pac_install openssh gnupg btop bat acpi polkit-gnome libmtp gvfs-mtp yazi ffmpegthumbnailer poppler power-profiles-daemon
 
 ensure_yay
 yay_install zen-browser-bin spotify 1password 1password-cli vesktop-bin
