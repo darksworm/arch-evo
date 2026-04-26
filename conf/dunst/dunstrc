@@ -16,10 +16,11 @@
     width = 350
     height = 150
     origin = top-right
-    offset = 8x8
-    padding = 12
-    horizontal_padding = 12
+    offset = 10x10
+    padding = 15
+    horizontal_padding = 15
     frame_width = 2
+    corner_radius = 8
 
     # Progress bar (for volume/brightness OSD)
     progress_bar = true
@@ -36,7 +37,7 @@
     # Icons
     icon_position = left
     min_icon_size = 32
-    max_icon_size = 64
+    max_icon_size = 48
 
     # History
     sticky_history = yes
@@ -50,25 +51,24 @@
     # Timeouts
     timeout = 5
 
-    # Colors — Cyberdream palette
+    # Colors — cyberdream palette
     frame_color = "#5ea1ff"
     separator_color = frame
-    corner_radius = 4
 
 [urgency_low]
-    background = "#16181aee"
+    background = "#16181aE6"
     foreground = "#ffffff"
     frame_color = "#3c4048"
     timeout = 5
 
 [urgency_normal]
-    background = "#16181aee"
+    background = "#16181aE6"
     foreground = "#ffffff"
     frame_color = "#5ea1ff"
-    timeout = 5
+    timeout = 8
 
 [urgency_critical]
-    background = "#16181aee"
+    background = "#16181aF0"
     foreground = "#ffffff"
     frame_color = "#ff6e5e"
-    timeout = 10
+    timeout = 0

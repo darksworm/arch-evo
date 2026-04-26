@@ -1,63 +1,62 @@
-# k9s skin — oxocarbon dark
-# Ported from maac-nix/dev/k9s.nix + maac-nix/theme.nix
+# k9s skin — cyberdream
 k9s:
   body:
-    fgColor: "#dde1e6"
-    bgColor: "#161616"
-    logoColor: "#ee5396"
+    fgColor: "#ffffff"
+    bgColor: "#16181a"
+    logoColor: "#5ea1ff"
   prompt:
-    fgColor: "#dde1e6"
-    bgColor: "#161616"
-    suggestColor: "#525252"
+    fgColor: "#ffffff"
+    bgColor: "#16181a"
+    suggestColor: "#3c4048"
     border:
-      default: "#ee5396"
-      command: "#ee5396"
+      default: "#5ea1ff"
+      command: "#5ea1ff"
   info:
-    fgColor: "#dde1e6"
-    selectionColor: "#dde1e6"
+    fgColor: "#ffffff"
+    selectionColor: "#5ef1ff"
   frame:
     border:
-      fgColor: "#393939"
-      focusColor: "#ff7eb6"
+      fgColor: "#3c4048"
+      focusColor: "#5ea1ff"
     menu:
-      fgColor: "#dde1e6"
-      keyColor: "#ee5396"
-      numKeyColor: "#ee5396"
+      fgColor: "#ffffff"
+      keyColor: "#5ea1ff"
+      numKeyColor: "#bd5eff"
     crumbs:
-      fgColor: "#dde1e6"
-      bgColor: "#161616"
-      activeColor: "#262626"
+      fgColor: "#ffffff"
+      bgColor: "#16181a"
+      activeColor: "#5ea1ff"
     status:
-      newColor: "#be95ff"
-      modifyColor: "#33b1ff"
-      addColor: "#33b1ff"
-      errorColor: "#ee5396"
-      highlightcolor: "#ee5396"
-      killColor: "#ee5396"
-      completedColor: "#525252"
+      newColor: "#bd5eff"
+      modifyColor: "#5ef1ff"
+      addColor: "#5eff6c"
+      errorColor: "#ff6e5e"
+      highlightcolor: "#f1ff5e"
+      killColor: "#ff6e5e"
+      completedColor: "#3c4048"
     title:
-      fgColor: "#dde1e6"
-      bgColor: "#161616"
-      highlightColor: "#ff7eb6"
-      counterColor: "#dde1e6"
-      filterColor: "#dde1e6"
+      fgColor: "#ffffff"
+      bgColor: "#16181a"
+      highlightColor: "#5ea1ff"
+      counterColor: "#ffffff"
+      filterColor: "#5ef1ff"
   views:
     table:
-      fgColor: "#dde1e6"
-      bgColor: "#161616"
-      cursorBgColor: "#262626"
-      cursorFgColor: "#161616"
-      markColor: "#ff7eb6"
+      fgColor: "#ffffff"
+      bgColor: "#16181a"
+      cursorBgColor: "#5ea1ff"
+      cursorFgColor: "#16181a"
+      markColor: "#f1ff5e"
       header:
-        fgColor: "#525252"
-        bgColor: "#161616"
+        fgColor: "#3c4048"
+        bgColor: "#16181a"
     yaml:
-      keyColor: "#ee5396"
-      colonColor: "#525252"
-      valueColor: "#dde1e6"
+      keyColor: "#5ea1ff"
+      colonColor: "#3c4048"
+      valueColor: "#ffffff"
     logs:
-      fgColor: "#dde1e6"
-      bgColor: "#161616"
+      fgColor: "#ffffff"
+      bgColor: "#16181a"
       indicator:
-        fgColor: "#525252"
-        bgColor: "#161616"
+        fgColor: "#3c4048"
+        bgColor: "#16181a"
