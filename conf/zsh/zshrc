@@ -38,9 +38,8 @@ alias vim="nvim"
 [[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
     source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
-# FZF history search
-[[ -f /usr/share/zsh/plugins/zsh-fzf-history-search/zsh-fzf-history-search.plugin.zsh ]] && \
-    source /usr/share/zsh/plugins/zsh-fzf-history-search/zsh-fzf-history-search.plugin.zsh
+# FZF key bindings (ctrl+r history, ctrl+t files, alt+c cd)
+[[ -f /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
 
 # Dev plugin (direnv, zoxide, fnm lazy loading)
 [[ -f "${HOME}/.config/zsh/plugins/dev.zsh" ]] && source "${HOME}/.config/zsh/plugins/dev.zsh"

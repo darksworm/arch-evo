@@ -8,7 +8,7 @@ section "Zsh Shell"
 pac_install zsh starship zoxide fzf direnv zsh-autosuggestions
 
 ensure_yay
-yay_install zsh-vi-mode zsh-fast-syntax-highlighting zsh-fzf-history-search-git
+yay_install zsh-vi-mode zsh-fast-syntax-highlighting
 
 # Deploy configs
 deploy_config "${CONF_DIR}/zsh/zshrc" "${HOME}/.zshrc"
