@@ -1,8 +1,12 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 30,
-    "spacing": 8,
+    "height": 22,
+    "spacing": 4,
+    "margin-top": 0,
+    "margin-bottom": 0,
+    "margin-left": 2,
+    "margin-right": 2,
 
     "modules-left": ["hyprland/workspaces", "taskbar"],
     "modules-center": ["clock"],
@@ -30,8 +34,8 @@
     },
 
     "clock": {
-        "format": "{:%Y-%m-%d  %H:%M}",
-        "format-alt": "{:%A, %B %d, %Y  %H:%M:%S}",
+        "format": "{:%H:%M}",
+        "format-alt": "{:%A, %B %d  %H:%M}",
         "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
         "interval": 1
     },
@@ -41,35 +45,31 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{icon}  {capacity}%",
-        "format-charging": "󰂄  {capacity}%",
-        "format-plugged": "  {capacity}%",
-        "format-icons": ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"]
+        "format": "⚡ {capacity}%",
+        "format-charging": "⚡ {capacity}%",
+        "format-plugged": "🔌 {capacity}%",
+        "format-full": "⚡ Full"
     },
 
     "network": {
-        "format-wifi": "  {essid}",
-        "format-ethernet": "󰈀  {ifname}",
-        "format-linked": "󰈀  {ifname} (No IP)",
-        "format-disconnected": "󰖪  Disconnected",
+        "format-wifi": "📶 {essid}",
+        "format-ethernet": "🌐 {ifname}",
+        "format-linked": "🌐 {ifname} (No IP)",
+        "format-disconnected": "❌ Disconnected",
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}\n{bandwidthUpBits} up / {bandwidthDownBits} down"
     },
 
     "pulseaudio": {
-        "format": "{icon}  {volume}%",
-        "format-bluetooth": "  {volume}%",
-        "format-muted": "  muted",
-        "format-icons": {
-            "headphone": "",
-            "default": ["", "", ""]
-        },
+        "format": "🔊 {volume}%",
+        "format-bluetooth": "🎧 {volume}%",
+        "format-muted": "🔇 muted",
         "on-click": "pwvucontrol"
     },
 
     "bluetooth": {
-        "format": "  {status}",
-        "format-connected": "  {device_alias}",
-        "format-connected-battery": "  {device_alias} {device_battery_percentage}%",
+        "format": "🔵 {status}",
+        "format-connected": "🔵 {device_alias}",
+        "format-connected-battery": "🔵 {device_alias} {device_battery_percentage}%",
         "tooltip-format": "{controller_alias}\t{controller_address}\n{num_connections} connected",
         "on-click": "blueman-manager"
     },
