@@ -1,7 +1,10 @@
 [settings]
 idiomatic_version_file = true
+idiomatic_version_file_enable_tools = ["node", "java"]
 
 [tools]
 java = "21"
-node = "24.14.0"
+k6 = "latest"
+k9s = "0.50.15"
+kind = "0.31.0"
 rust = "latest"
