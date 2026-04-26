@@ -41,6 +41,11 @@ alias vim="nvim"
 # FZF key bindings (ctrl+r history, ctrl+t files, alt+c cd)
 [[ -f /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
 
+# SSH agent socket (provided by ssh-agent.service) + pass-backed askpass
+export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+export SSH_ASKPASS="${HOME}/.local/bin/ssh-askpass-pass"
+export SSH_ASKPASS_REQUIRE=force
+
 # Dev plugin (direnv, zoxide, fnm lazy loading)
 [[ -f "${HOME}/.config/zsh/plugins/dev.zsh" ]] && source "${HOME}/.config/zsh/plugins/dev.zsh"
 

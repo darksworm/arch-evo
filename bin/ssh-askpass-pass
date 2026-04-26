@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# SSH_ASKPASS helper backed by `pass`.
+# ssh prompts look like `Enter passphrase for /home/.../.ssh/id_ecdsa:`.
+# We pull the path out and `pass show ssh/<basename>`.
+set -euo pipefail
+
+prompt="${1:-}"
+keypath=$(grep -oE '/[^ :"'"'"']+' <<<"$prompt" | head -1)
+
+if [[ -z "$keypath" ]]; then
+    exit 1
+fi
+
+exec pass show "ssh/$(basename "$keypath")"

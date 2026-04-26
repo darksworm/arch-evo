@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
-# Lock screen wrapper
+# Lock screen and drop cached secrets so unlock requires re-auth.
+# - ssh-add -D: clear all keys from ssh-agent
+# - gpg-connect-agent reloadagent: drop cached gpg passphrases (also resets pass)
+ssh-add -D >/dev/null 2>&1 || true
+gpg-connect-agent reloadagent /bye >/dev/null 2>&1 || true
 exec hyprlock
