@@ -24,4 +24,8 @@ fi
 # Matuwall config (wallpaper picker)
 deploy_config "${CONF_DIR}/matuwall/config.json" "${HOME}/.config/matuwall/config.json"
 
+# libadwaita / GNOME apps read color-scheme from dconf, not the GTK ini.
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
+
 log "Theme and appearance configured"

@@ -6,7 +6,7 @@ plugins = ["scratchpads"]
 
 [scratchpads.slack]
 command = "slack"
-class = "Slack"
+class = "slack"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
