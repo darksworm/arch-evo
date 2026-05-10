@@ -1,0 +1,40 @@
+#!/bin/sh
+# Switch CPU/platform power profile to control fan noise.
+# Usage: fanmode [noiseless|balanced|performance]   (no arg → fuzzel picker)
+set -eu
+
+set_mode() {
+    case "$1" in
+        noiseless)   profile=power-saver ;;
+        balanced)    profile=balanced ;;
+        performance) profile=performance ;;
+        *) echo "unknown mode: $1" >&2; exit 2 ;;
+    esac
+    powerprofilesctl set "$profile"
+    notify-send -t 2000 "Fan mode: $1" "powerprofilesctl → $profile"
+}
+
+if [ $# -gt 0 ] && [ "$1" != pick ]; then
+    set_mode "$1"
+    exit 0
+fi
+
+current=$(powerprofilesctl get)
+case "$current" in
+    power-saver) cur=noiseless ;;
+    balanced)    cur=balanced ;;
+    performance) cur=performance ;;
+    *) cur="" ;;
+esac
+
+mark() { [ "$1" = "$cur" ] && printf '● %s\n' "$1" || printf '○ %s\n' "$1"; }
+
+choice=$(
+    {
+        mark noiseless
+        mark balanced
+        mark performance
+    } | fuzzel --dmenu --prompt "fan: "
+) || exit 0
+
+set_mode "${choice#* }"
