@@ -10,7 +10,15 @@
 
     "modules-left": ["hyprland/workspaces", "taskbar"],
     "modules-center": ["clock"],
-    "modules-right": ["tray", "bluetooth", "network", "pulseaudio", "battery"],
+    "modules-right": ["custom/caffeine", "tray", "bluetooth", "network", "pulseaudio", "battery"],
+
+    "custom/caffeine": {
+        "exec": "if [ -e /tmp/caffeine.on ]; then printf '{\"text\":\"☕ STAY AWAKE\",\"class\":\"on\",\"tooltip\":\"Idle timers paused — click to resume\"}'; else printf '{\"text\":\"\",\"class\":\"off\",\"tooltip\":\"\"}'; fi",
+        "return-type": "json",
+        "interval": "once",
+        "signal": 8,
+        "on-click": "~/.local/bin/caffeine"
+    },
 
     "hyprland/workspaces": {
         "format": "{icon}",

@@ -1,0 +1,16 @@
+#!/bin/sh
+# Toggle hypridle pause — keeps screen on, no auto-lock.
+# Waybar custom/caffeine module reads /tmp/caffeine.on and refreshes on SIGRTMIN+8.
+set -eu
+
+if [ -e /tmp/caffeine.on ]; then
+    setsid -f hypridle >/dev/null 2>&1
+    rm -f /tmp/caffeine.on
+    notify-send -t 2000 "Caffeine off" "Idle timers resumed"
+else
+    pkill -x hypridle || true
+    : > /tmp/caffeine.on
+    notify-send -u critical "STAY AWAKE" "Idle timers paused"
+fi
+
+pkill -SIGRTMIN+8 waybar || true
