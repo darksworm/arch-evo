@@ -3,27 +3,69 @@
 # re-enable it when the external is unplugged.
 #
 # Listens to Hyprland IPC events — no polling, instant reaction.
+#
+# Hyprland 0.55.x has a race where re-enabling the laptop as the *only*
+# remaining output is silently dropped ("nothing to render"). We work around
+# it by verifying eDP-1 actually came back and, if not, falling back to
+# `hyprctl reload`, which re-applies the config's default monitor rule through
+# the main event loop (the same trick kanshictl reload uses).
 
 LAPTOP="eDP-1"
 
-is_external() { [[ "$1" != "$LAPTOP" ]]; }
+# Hyprland (>=0.55) spins up a headless "FALLBACK" output whenever no real
+# monitor is left, so it must never be treated as a connected external screen.
+is_external() { [[ "$1" != "$LAPTOP" && "$1" != "FALLBACK" ]]; }
 
-# Count currently connected external monitors
+# Count currently connected external monitors (excluding laptop + FALLBACK)
 count_external() {
-    hyprctl monitors -j | jq -r '.[].name' | grep -cv "^${LAPTOP}$"
+    hyprctl monitors -j | jq -r '.[].name' | grep -vxE "${LAPTOP}|FALLBACK" | grep -c .
+}
+
+# True (exit 0) while the laptop panel is still disabled.
+laptop_disabled() {
+    hyprctl monitors all -j | jq -e --arg m "$LAPTOP" \
+        '[.[] | select(.name==$m) | .disabled] | any' >/dev/null
+}
+
+# Re-enable the laptop, verifying it actually turned on. Works around the
+# 0.55 "only-output" race: re-enabling eDP-1 as the sole output via `keyword
+# monitor` is silently dropped ("nothing to render"). If a couple of retries
+# don't take, fall back to `hyprctl reload`, which re-applies the config's
+# monitor rule through the main event loop and reliably brings the panel back.
+# (`dpms on` can't help here — it only unblanks an already-enabled output.)
+enable_laptop() {
+    local i
+    for i in 1 2; do
+        hyprctl keyword monitor "$LAPTOP,preferred,auto,1" >/dev/null
+        sleep 0.4
+        laptop_disabled || return 0
+    done
+    hyprctl reload >/dev/null
 }
 
 apply() {
-    local ext_count
-    ext_count=$(count_external)
-
-    if (( ext_count > 0 )); then
+    if (( $(count_external) > 0 )); then
         # External present → disable laptop
-        hyprctl keyword monitor "$LAPTOP,disable"
+        hyprctl keyword monitor "$LAPTOP,disable" >/dev/null
     else
-        # No external → enable laptop
-        hyprctl keyword monitor "$LAPTOP,preferred,auto,1"
+        # No external → bring the laptop back (verified)
+        enable_laptop
     fi
+}
+
+# After a monitor swap the wallpaper daemon, bar and scratchpads keep stale
+# state (overlapping wallpapers, bar offset wrong, pyprland scratchpads
+# orphaned to the removed monitor). Re-apply the wallpaper, relaunch waybar
+# and reload pypr so all three re-layout cleanly.
+refresh_ui() {
+    local img
+    img=$(awww query 2>/dev/null | grep -oP 'image: \K.*' | head -1)
+    [ -n "$img" ] && awww img "$img" --transition-type none >/dev/null 2>&1
+    pkill -x waybar 2>/dev/null
+    sleep 0.4
+    setsid waybar >/dev/null 2>&1 &
+    # Re-sync pyprland so scratchpads rebind to the surviving monitor.
+    pypr reload >/dev/null 2>&1
 }
 
 # Apply on startup (handles already-plugged-in monitors)
@@ -33,18 +75,14 @@ apply
 # Listen for monitor events
 socat -U - "UNIX-CONNECT:$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while IFS= read -r line; do
     case "$line" in
-        monitoradded\>*)
-            mon="${line#monitoradded>}"
+        monitoradded\>\>*|monitorremoved\>\>*)
+            # Events look like "monitoradded>>DP-1" — grab the monitor name.
+            mon="${line##*>}"
             if is_external "$mon"; then
-                # Small delay lets Hyprland finish configuring the new monitor
+                # Small delay lets Hyprland finish (re)configuring outputs.
                 sleep 0.5
                 apply
-            fi
-            ;;
-        monitorremoved\>*)
-            mon="${line#monitorremoved>}"
-            if is_external "$mon"; then
-                apply
+                refresh_ui
             fi
             ;;
     esac

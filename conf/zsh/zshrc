@@ -28,6 +28,7 @@ alias ll="ls -la"
 alias la="ls -a"
 alias vi="nvim"
 alias vim="nvim"
+alias hypr-recover='HYPRLAND_INSTANCE_SIGNATURE=$(ls /run/user/1000/hypr/) hyprctl reload'
 
 # Plugins — loaded from system/AUR paths
 
