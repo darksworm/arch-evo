@@ -6,7 +6,7 @@ source "$(dirname "$(dirname "${BASH_SOURCE[0]}")")/.config"
 section "Wayland Tools"
 
 pac_install \
-    waybar fuzzel dunst wlsunset \
+    waybar fuzzel dunst hyprsunset \
     grim slurp wl-clipboard cliphist \
     brightnessctl \
     playerctl pamixer \
@@ -26,6 +26,7 @@ mkdir -p "${HOME}/.config/hypr/hyprlock"
 cp -f "${REPO_DIR}/static/hyprlock/wall.jpg" "${HOME}/.config/hypr/hyprlock/wall.jpg"
 cp -f "${REPO_DIR}/static/hyprlock/fg.png" "${HOME}/.config/hypr/hyprlock/fg.png"
 deploy_config "${CONF_DIR}/hypr/hypridle.conf" "${HOME}/.config/hypr/hypridle.conf"
+deploy_config "${CONF_DIR}/hypr/hyprsunset.conf" "${HOME}/.config/hypr/hyprsunset.conf"
 deploy_config "${CONF_DIR}/fuzzel/fuzzel.ini" "${HOME}/.config/fuzzel/fuzzel.ini"
 
 log "Wayland tools installed and configured"

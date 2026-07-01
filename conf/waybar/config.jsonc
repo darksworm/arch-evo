@@ -10,7 +10,18 @@
 
     "modules-left": ["hyprland/workspaces", "taskbar"],
     "modules-center": ["clock"],
-    "modules-right": ["custom/caffeine", "tray", "bluetooth", "network", "pulseaudio", "battery"],
+    "modules-right": ["custom/sunset", "custom/caffeine", "tray", "bluetooth", "network", "pulseaudio", "battery"],
+
+    "custom/sunset": {
+        "exec": "~/.local/bin/sunset-control status",
+        "return-type": "json",
+        "interval": 60,
+        "signal": 9,
+        "smooth-scrolling-threshold": 5,
+        "on-scroll-up": "~/.local/bin/sunset-control up",
+        "on-scroll-down": "~/.local/bin/sunset-control down",
+        "on-click": "~/.local/bin/sunset-control reset"
+    },
 
     "custom/caffeine": {
         "exec": "if [ -e /tmp/caffeine.on ]; then printf '{\"text\":\"☕ STAY AWAKE\",\"class\":\"on\",\"tooltip\":\"Idle timers paused — click to resume\"}'; else printf '{\"text\":\"\",\"class\":\"off\",\"tooltip\":\"\"}'; fi",
