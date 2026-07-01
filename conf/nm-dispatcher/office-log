@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Write a dated flag file when connecting to the office WiFi.
+# Placed in /etc/NetworkManager/dispatcher.d/office-log by the installer.
+
+SSID="Visma-Guest"
+LOG_DIR="/home/ilmars/.local/share/office-log"
+
+[[ "$2" != "up" ]] && exit 0
+
+connected_ssid=$(nmcli -t -f active,ssid dev wifi 2>/dev/null | awk -F: '/^yes:/{print $2}')
+[[ "$connected_ssid" != "$SSID" ]] && exit 0
+
+mkdir -p "$LOG_DIR"
+touch "$LOG_DIR/$(date +%Y-%m-%d)"
