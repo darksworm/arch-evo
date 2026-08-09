@@ -1,0 +1,19 @@
+#!/bin/sh
+# Toggle the keyd caps remap (tap=Esc / hold=Hyper) back to plain Caps Lock.
+# Runtime-only via `keyd bind` — a keyd restart/reload restores the remap.
+set -eu
+
+# Clear an active caps lock so the toggle never leaves it stuck on
+if grep -q 1 /sys/class/leds/input*::capslock/brightness 2>/dev/null; then
+    wtype -k Caps_Lock
+fi
+
+if [ -e /tmp/caps-remap.off ]; then
+    keyd bind reset
+    rm -f /tmp/caps-remap.off
+    notify-send -t 2000 "Caps remap on" "Caps = Esc / Hyper"
+else
+    keyd bind 'capslock = capslock'
+    : > /tmp/caps-remap.off
+    notify-send -t 2000 "Caps remap off" "Caps = Caps Lock"
+fi
