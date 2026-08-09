@@ -1,0 +1,19 @@
+#!/bin/sh
+# GeForce NOW inside gamescope: the client's CEF pointer lock is broken on
+# Wayland (camera stops turning at screen edges), so gamescope grabs the
+# cursor itself and feeds the app relative motion.
+# Sized to the focused monitor so it works on both the desktop and laptop screen.
+set -eu
+
+mon=$(hyprctl -j monitors | jq '.[] | select(.focused)')
+w=$(echo "$mon" | jq '.width')
+h=$(echo "$mon" | jq '.height')
+r=$(echo "$mon" | jq '.refreshRate | round')
+
+# Pin GPU clocks while streaming: power-state ramping causes hitches.
+dpm=/sys/class/drm/card1/device/power_dpm_force_performance_level
+echo high | sudo tee "$dpm" >/dev/null
+trap 'echo auto | sudo tee "$dpm" >/dev/null' EXIT
+
+gamescope -W "$w" -H "$h" -r "$r" -f --force-grab-cursor -- \
+    flatpak run com.nvidia.geforcenow "$@"
