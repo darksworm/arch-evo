@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# blueman-manager DBus-activates blueman-applet, which force-spawns a tray icon
+# (StatusIcon is non-unloadable). Kill the icon, and the applet once the UI closes.
+# blueman-manager is single-instance over DBus: a hung leftover instance makes
+# every new launch a silent no-op, so clear stale ones first (pkill -x can't
+# match names >15 chars, hence -f with anchored path)
+pkill -f '^/usr/bin/python /usr/bin/blueman-manager'
+blueman-manager &
+MGR=$!
+{ sleep 1; pkill -x blueman-tray; } &
+wait "$MGR"
+pkill -x blueman-applet
+pkill -x blueman-tray
