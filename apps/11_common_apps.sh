@@ -10,6 +10,8 @@ pac_install openssh gnupg btop bat acpi polkit-gnome libmtp gvfs-mtp yazi ffmpeg
 ensure_yay
 yay_install zen-browser-bin spotify 1password 1password-cli vesktop-bin
 
+ln -sf "${CONF_DIR}/spotify-flags.conf" "${HOME}/.config/spotify-flags.conf"
+
 # Deploy btop config
 deploy_config_dir "${CONF_DIR}/btop" "${HOME}/.config/btop"
 
