@@ -1,45 +1,58 @@
 #!/bin/sh
 # Adjust hyprsunset from waybar — custom/sunset refreshes on SIGRTMIN+9.
+# The stepped schedule lives here, not in hyprsunset.conf: the daemon applies
+# its profiles unconditionally, which would override a manual adjustment with
+# a less-red step. Our daemon mode only steps toward redder (except the
+# morning reset), so hyprsunset itself runs profile-less as a pure IPC server.
 set -eu
 
+# fixed times approximate Copenhagen's year-round average (no lat/long sun tracking);
+# 6500 is the daytime "no tint" value — hyprsunset treats it as neutral
+scheduled_temp() {
+    now=$(date +%H%M)
+    if   [ "$now" -lt 0700 ]; then echo 2200
+    elif [ "$now" -lt 2100 ]; then echo 6500
+    elif [ "$now" -lt 2300 ]; then echo 4200
+    elif [ "$now" -lt 2330 ]; then echo 2700
+    else echo 2400
+    fi
+}
+
 case "${1:-status}" in
-    up|down) # clamp to 1000-6500 ourselves: the daemon allows up to 20000, and
-        # anything past ~6500 reads as "tint off" when scrolling
+    up|down) # hyprsunset rejects temperatures below 1000; cap at 6500 — anything
+        # past that reads as "tint off" when scrolling
         cur=$(hyprctl hyprsunset temperature)
-        if [ "$1" = up ]; then new=$((cur + 100)); else new=$((cur - 100)); fi
+        if [ "$1" = up ]; then new=$((cur + 200)); else new=$((cur - 200)); fi
         [ "$new" -gt 6500 ] && new=6500
         [ "$new" -lt 1000 ] && new=1000
         hyprctl hyprsunset temperature "$new" >/dev/null ;;
-    reset) # hyprsunset 0.3.3 lacks the `reset` IPC, and restarting the daemon flashes
-        # the tint off. Instead, pick the scheduled profile for the current time from
-        # the config and set it over IPC.
-        sel=$(awk -v now="$(date +%H%M)" '
-            /^[[:space:]]*time[[:space:]]*=/        { split($NF, t, ":"); cur = t[1] * 100 + t[2] }
-            /^[[:space:]]*temperature[[:space:]]*=/ { val = $NF }
-            /^[[:space:]]*identity[[:space:]]*=/    { val = "identity" }
-            /}/ && cur != "" { profiles[cur] = val; cur = "" }
-            END {
-                best = -1; last = -1
-                for (p in profiles) {
-                    if (p + 0 <= now + 0 && p + 0 > best) best = p + 0
-                    if (p + 0 > last) last = p + 0
-                }
-                if (best == -1) best = last  # before the first profile: yesterday'\''s last applies
-                print profiles[best]
-            }' "${HOME}/.config/hypr/hyprsunset.conf")
-        if [ "$sel" = "identity" ]; then
-            hyprctl hyprsunset identity >/dev/null
-        else
-            hyprctl hyprsunset temperature "$sel" >/dev/null
-        fi ;;
+    reset)
+        hyprctl hyprsunset temperature "$(scheduled_temp)" >/dev/null ;;
+    daemon) # apply a step only when it is redder than the current setting, so a
+        # manual adjustment that is already redder survives; the 6500 morning
+        # reset always applies
+        last=""
+        while :; do
+            if ! cur=$(hyprctl hyprsunset temperature 2>/dev/null); then
+                sleep 5
+                continue
+            fi
+            target=$(scheduled_temp)
+            if [ "$target" != "$last" ]; then
+                if [ "$target" -eq 6500 ] || [ "$target" -lt "$cur" ]; then
+                    hyprctl hyprsunset temperature "$target" >/dev/null
+                    pkill -SIGRTMIN+9 waybar || true
+                fi
+                last=$target
+            fi
+            sleep 60
+        done ;;
     status)
         if ! temp=$(hyprctl hyprsunset temperature 2>/dev/null); then
             printf '{"text":""}'
             exit 0
         fi
-        # hyprsunset 0.3.3 has no identity query — any `identity*` IPC message
-        # ENABLES identity (kills the tint), so never ask, only show temperature
-        printf '{"text":"☀ %sK","tooltip":"hyprsunset: %s K — scroll ±100K, click to reset to schedule"}' "$temp" "$temp"
+        printf '{"text":"☀ %sK","tooltip":"hyprsunset: %s K — scroll ±200K, click to reset to schedule"}' "$temp" "$temp"
         exit 0 ;;
 esac
 
