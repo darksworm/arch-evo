@@ -16,3 +16,10 @@ for script in "${BIN_DIR}"/*; do
 done
 
 log "Utility scripts deployed to ~/.local/bin"
+
+# fanmode-auto: load-adaptive power profile service.
+# systemd refuses to enable symlinked unit files, so copy instead of deploy_config.
+install -Dm644 "${CONF_DIR}/systemd/fanmode-auto.service" "${HOME}/.config/systemd/user/fanmode-auto.service"
+mkdir -p "${HOME}/.config/systemd/user/default.target.wants"
+ln -sfn "../fanmode-auto.service" "${HOME}/.config/systemd/user/default.target.wants/fanmode-auto.service"
+log "Enabled fanmode-auto.service"

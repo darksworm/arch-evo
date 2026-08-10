@@ -1,0 +1,31 @@
+#!/bin/sh
+# Load-adaptive power profile: prefers power-saver, bumps to performance under load.
+# Run by fanmode-auto.service.
+set -eu
+
+# ponytail: fixed thresholds (up: >=50% busy once, down: <=25% for 3 ticks of 10s); tune here if it flaps
+prev_total=0 prev_idle=0 low_count=0
+while :; do
+    read -r _ user nice system idle iowait irq softirq steal _ < /proc/stat
+    total=$((user + nice + system + idle + iowait + irq + softirq + steal))
+    idle_all=$((idle + iowait))
+    dt=$((total - prev_total)); di=$((idle_all - prev_idle))
+    prev_total=$total; prev_idle=$idle_all
+    if [ "$dt" -gt 0 ]; then
+        busy=$((100 * (dt - di) / dt))
+        cur=$(powerprofilesctl get)
+        if [ "$busy" -ge 50 ]; then
+            low_count=0
+            [ "$cur" = performance ] || { echo "busy ${busy}% -> performance"; powerprofilesctl set performance; }
+        elif [ "$busy" -le 25 ]; then
+            low_count=$((low_count + 1))
+            if [ "$low_count" -ge 3 ] && [ "$cur" != power-saver ]; then
+                echo "busy ${busy}% low x${low_count} -> power-saver"
+                powerprofilesctl set power-saver
+            fi
+        else
+            low_count=0
+        fi
+    fi
+    sleep 10
+done

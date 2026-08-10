@@ -1,0 +1,9 @@
+[Unit]
+Description=Load-adaptive power profile (fanmode auto)
+
+[Service]
+ExecStart=%h/.local/bin/fanmode-auto
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
