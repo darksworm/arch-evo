@@ -11,10 +11,8 @@ pac_install \
     brightnessctl \
     playerctl pamixer \
     xdg-desktop-portal-wlr \
-    hyprlock hypridle
-
-ensure_yay
-yay_install awww-bin
+    hyprlock hypridle \
+    awww
 
 # Deploy configs
 deploy_config_dir "${CONF_DIR}/waybar" "${HOME}/.config/waybar"
