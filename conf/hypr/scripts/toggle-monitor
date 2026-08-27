@@ -16,17 +16,17 @@ echo "$active" | grep -q "^${laptop}$" && laptop_active=true
 
 if $laptop_active && [ -n "$external" ]; then
     # Both active → disable laptop, keep external
-    hyprctl keyword monitor "$laptop,disable"
+    hyprctl eval "hl.monitor({ output = \"$laptop\", disabled = true })"
 elif $laptop_active && [ -z "$external" ]; then
     # Only laptop active, no external connected → do nothing safely
     notify-send "Monitor" "No external monitor detected"
 elif ! $laptop_active; then
     # Laptop is off (external must be on) → enable laptop, disable external
-    hyprctl keyword monitor "$laptop,preferred,auto,auto"
+    hyprctl eval "hl.monitor({ output = \"$laptop\", mode = \"preferred\", position = \"auto\", scale = \"auto\", disabled = false })"
     sleep 0.5
     # Verify laptop came up before disabling external
     if hyprctl monitors -j | jq -r '.[].name' | grep -q "^${laptop}$"; then
-        [ -n "$external" ] && hyprctl keyword monitor "$external,disable"
+        [ -n "$external" ] && hyprctl eval "hl.monitor({ output = \"$external\", disabled = true })"
     else
         notify-send "Monitor" "Failed to enable laptop display — keeping external"
     fi

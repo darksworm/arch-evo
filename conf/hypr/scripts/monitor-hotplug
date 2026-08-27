@@ -36,7 +36,7 @@ laptop_disabled() {
 enable_laptop() {
     local i
     for i in 1 2; do
-        hyprctl keyword monitor "$LAPTOP,preferred,auto,1" >/dev/null
+        hyprctl eval "hl.monitor({ output = \"$LAPTOP\", mode = \"preferred\", position = \"auto\", scale = 1, disabled = false })" >/dev/null
         sleep 0.4
         laptop_disabled || return 0
     done
@@ -46,7 +46,7 @@ enable_laptop() {
 apply() {
     if (( $(count_external) > 0 )); then
         # External present → disable laptop
-        hyprctl keyword monitor "$LAPTOP,disable" >/dev/null
+        hyprctl eval "hl.monitor({ output = \"$LAPTOP\", disabled = true })" >/dev/null
     else
         # No external → bring the laptop back (verified)
         enable_laptop
