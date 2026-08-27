@@ -84,6 +84,23 @@ deploy_config_dir() {
     log "Linked directory: ${src_dir} → ${dest_dir}"
 }
 
+# copy_config: like deploy_config but writes a real file instead of a symlink.
+# Use when the consumer refuses to follow symlinks (e.g. wireplumber drop-in dir).
+# src is relative to ${CONF_DIR}.
+copy_config() {
+    local src="${CONF_DIR}/$1"
+    local dest="$2"
+
+    if [[ ! -f "${src}" ]]; then
+        warn "Config source not found: ${src}"
+        return 1
+    fi
+
+    mkdir -p "$(dirname "${dest}")"
+    cp -f "${src}" "${dest}"
+    log "Copied: ${src} → ${dest}"
+}
+
 enable_service() {
     local service="$1"
     if is_docker; then
