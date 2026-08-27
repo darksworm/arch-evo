@@ -1,14 +1,21 @@
 #!/usr/bin/env bash
 # SSH_ASKPASS helper backed by `pass`.
-# ssh prompts look like `Enter passphrase for /home/.../.ssh/id_ecdsa:`.
-# We pull the path out and `pass show ssh/<basename>`.
+# With SSH_ASKPASS_REQUIRE=force, ssh routes *every* prompt here, not just
+# passphrases, so anything we can't answer from `pass` goes back to the tty.
 set -euo pipefail
 
 prompt="${1:-}"
-keypath=$(grep -oE '/[^ :"'"'"']+' <<<"$prompt" | head -1)
 
-if [[ -z "$keypath" ]]; then
-    exit 1
+if [[ "$prompt" == *"Enter passphrase for"* ]]; then
+    keypath=$(grep -oE '/[^ :"'"'"']+' <<<"$prompt" | head -1)
+    if [[ -n "$keypath" ]]; then
+        pass show "ssh/$(basename "$keypath")" | head -1
+        exit
+    fi
 fi
 
-exec pass show "ssh/$(basename "$keypath")"
+printf '%s' "$prompt" >/dev/tty
+[[ "$prompt" == *"(yes/no"* ]] || silent=-s
+read ${silent:-} -r answer </dev/tty
+[[ -n "${silent:-}" ]] && echo >/dev/tty
+printf '%s\n' "$answer"
