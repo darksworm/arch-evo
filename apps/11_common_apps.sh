@@ -21,6 +21,9 @@ enable_user_service ssh-agent.service
 # Power profile: auto-switch performance on AC, power-saver on battery
 enable_service power-profiles-daemon.service
 sudo cp "${CONF_DIR}/udev/99-power-profile.rules" /etc/udev/rules.d/
+
+# Razer Kiyo: force auto exposure on plug (powers up black otherwise)
+sudo cp "${CONF_DIR}/udev/99-razer-kiyo.rules" /etc/udev/rules.d/
 sudo udevadm control --reload-rules
 
 log "Common applications installed"
