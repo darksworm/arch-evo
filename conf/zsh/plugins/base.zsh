@@ -24,3 +24,14 @@ _load_zvm() {
 
 zle -N _load_zvm
 bindkey '\e' _load_zvm
+
+# Remote hosts rarely have foot's terminfo; downgrade TERM for ssh so tools
+# like vim/less/tmux initialize instead of erroring with
+# "cannot initialize terminal type ($TERM=\"foot\")".
+ssh() {
+  if [[ "$TERM" == foot* ]]; then
+    TERM=xterm-256color command ssh "$@"
+  else
+    command ssh "$@"
+  fi
+}
