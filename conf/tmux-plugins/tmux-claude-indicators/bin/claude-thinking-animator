@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# Claude Code thinking animation - cycles through frames while Claude is thinking
+# Usage: claude-thinking-animator <tmux_window_id>
+#
+# Uses flock to ensure only ONE animator runs per window at any time.
+# Lock is automatically released when process exits (crash-safe).
+
+TARGET="${1:-$TMUX_PANE}"
+
+if [ -z "$TARGET" ]; then
+    echo "Error: No window/pane specified"
+    exit 1
+fi
+
+# Resolve target to window ID (panes start with %, windows with @)
+if [[ "$TARGET" == %* ]]; then
+    WINDOW=$(tmux display-message -t "$TARGET" -p '#{window_id}' 2>/dev/null) || exit 1
+else
+    WINDOW="$TARGET"
+fi
+
+# Acquire exclusive lock for this window
+LOCK_FILE="${TMUX_TMPDIR:-/tmp}/claude-animator-${WINDOW}.lock"
+exec 200>"$LOCK_FILE"
+trap 'exec 200>&-' EXIT INT TERM
+
+if ! flock -n 200; then
+    exit 0
+fi
+
+# Read animation frames from tmux option
+EMOJI_OPTION=$(tmux show-option -gqv @claude-emoji-thinking 2>/dev/null)
+
+if [ -n "$EMOJI_OPTION" ]; then
+    IFS=' ' read -ra FRAMES <<< "$EMOJI_OPTION"
+else
+    FRAMES=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
+fi
+
+FRAME_COUNT=${#FRAMES[@]}
+FRAME_INDEX=0
+
+# Read interval from tmux option (milliseconds), convert to seconds
+INTERVAL_MS=$(tmux show-option -gqv @claude-interval 2>/dev/null)
+INTERVAL_MS=${INTERVAL_MS:-160}
+INTERVAL=$(echo "scale=3; $INTERVAL_MS / 1000" | bc 2>/dev/null || awk "BEGIN {printf \"%.3f\", $INTERVAL_MS / 1000}")
+
+while true; do
+    current_state=$(tmux show-window-option -t "$WINDOW" -qv @claude-state 2>/dev/null) || true
+    if [ "$current_state" != "thinking" ]; then
+        exit 0
+    fi
+
+    tmux set-window-option -t "$WINDOW" @claude-thinking-frame "${FRAMES[$FRAME_INDEX]} "
+    FRAME_INDEX=$(( (FRAME_INDEX + 1) % FRAME_COUNT ))
+    sleep "$INTERVAL"
+done

@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Claude Code stale session detector - polls panes and marks inactive sessions
+# Usage: claude-stale-detector (runs as daemon)
+#
+# Uses flock to ensure only ONE detector runs globally at any time.
+# Lock is automatically released when process exits (crash-safe).
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+source "$SCRIPT_DIR/lib/helpers.sh"
+
+# Acquire exclusive lock - only one detector globally allowed
+LOCK_FILE="${CLAUDE_TMPDIR}/claude-stale-detector.lock"
+exec 200>"$LOCK_FILE"
+trap 'exec 200>&-' EXIT INT TERM
+
+if ! flock -n 200; then
+    exit 0
+fi
+
+# Read configuration from tmux options
+STALE_TIMEOUT=$(tmux show-option -gqv @claude-stale-timeout 2>/dev/null)
+STALE_TIMEOUT=${STALE_TIMEOUT:-300}
+
+POLL_INTERVAL=$(tmux show-option -gqv @claude-stale-interval 2>/dev/null)
+POLL_INTERVAL=${POLL_INTERVAL:-30}
+
+STALE_EMOJI=$(tmux show-option -gqv @claude-emoji-stale 2>/dev/null)
+STALE_EMOJI=${STALE_EMOJI:-⏳}
+
+while true; do
+    # Exit if plugin disabled
+    if [ "$(tmux show -gv @claude-enabled 2>/dev/null)" != "on" ]; then
+        exit 0
+    fi
+
+    now=$(date +%s)
+
+    while IFS='|' read -r pane_id pane_state pane_timestamp pane_cmd; do
+        { [ -z "$pane_state" ] || [ -z "$pane_timestamp" ]; } && continue
+
+        # Only mark active/complete as stale (skip ended, stale, thinking, question, waiting)
+        [ "$pane_state" != "active" ] && [ "$pane_state" != "complete" ] && continue
+
+        # Skip if Claude has exited (pane is running a shell)
+        case "$pane_cmd" in
+            bash|zsh|fish|sh|dash|ksh|tcsh|csh|"") continue ;;
+        esac
+
+        elapsed=$((now - pane_timestamp))
+        if [ "$elapsed" -gt "$STALE_TIMEOUT" ]; then
+            set_pane_state "$pane_id" "stale" "$STALE_EMOJI"
+            aggregate_state "$pane_id" 2>/dev/null || true
+        fi
+    done < <(tmux list-panes -a -F '#{pane_id}|#{@claude-pane-state}|#{@claude-timestamp}|#{pane_current_command}' 2>/dev/null)
+
+    sleep "$POLL_INTERVAL"
+done
