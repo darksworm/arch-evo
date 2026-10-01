@@ -55,6 +55,9 @@ install_deb_url() {
     tmp=$(mktemp -d)
     log "Downloading ${url##*/}..."
     curl -fsSL -o "${tmp}/pkg.deb" "${url}"
+    # apt reads local .debs as the _apt user; mktemp's 0700 dir blocks it
+    chmod 755 "${tmp}"
+    chmod 644 "${tmp}/pkg.deb"
     apt_install "${tmp}/pkg.deb"
     rm -rf "${tmp}"
 }
