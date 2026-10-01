@@ -16,20 +16,21 @@ apt_install \
     hyprlock hypridle \
     network-manager-gnome policykit-1-gnome
 
-# ── awww (wallpaper daemon): no release binaries — build with cargo
-if ! command -v awww-daemon &>/dev/null; then
+# ── awww (wallpaper daemon): no release binaries — build the latest tag.
+# Build the whole workspace: building daemon/ alone unifies rustix without its
+# std feature and fails to compile (rustix::stdio::stdout becomes unsafe).
+if [[ ! -x "${LOCAL_BIN}/awww-daemon" ]]; then
     apt_install liblz4-dev libwayland-dev wayland-protocols libxkbcommon-dev
     ensure_mise
     command -v cargo &>/dev/null || mise use --global rust@latest
+    AWWW_TAG=$(curl -fsSL "https://codeberg.org/api/v1/repos/LGFae/awww/releases?limit=1" | jq -r '.[0].tag_name')
     AWWW_SRC="${OPT_DIR}/src/awww"
-    if [[ -d "${AWWW_SRC}/.git" ]]; then
-        git -C "${AWWW_SRC}" pull --ff-only -q
-    else
-        git clone --depth 1 https://codeberg.org/LGFae/awww "${AWWW_SRC}"
-    fi
-    log "Building awww (takes a minute)..."
-    mise exec rust -- cargo install --locked --root "${HOME}/.local" --path "${AWWW_SRC}/client"
-    mise exec rust -- cargo install --locked --root "${HOME}/.local" --path "${AWWW_SRC}/daemon"
+    rm -rf "${AWWW_SRC}"
+    git clone --depth 1 --branch "${AWWW_TAG}" https://codeberg.org/LGFae/awww "${AWWW_SRC}"
+    log "Building awww ${AWWW_TAG} (takes a few minutes)..."
+    (cd "${AWWW_SRC}" && mise exec rust -- cargo build --release --locked)
+    mkdir -p "${LOCAL_BIN}"
+    install -m755 "${AWWW_SRC}/target/release/awww" "${AWWW_SRC}/target/release/awww-daemon" "${LOCAL_BIN}/"
 fi
 
 # ── matuwall (wallpaper picker): upstream prebuilt binary
