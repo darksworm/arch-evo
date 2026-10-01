@@ -112,9 +112,14 @@ hl.env("_JAVA_AWT_WM_NONREPARENTING", "1")
 hl.env("CLUTTER_BACKEND", "wayland")
 hl.env("NO_AT_BRIDGE", "1")
 hl.env("PATH", home .. "/.local/bin:" .. home .. "/.local/share/mise/shims:" .. os.getenv("PATH"))
-hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/ssh-agent.socket")
-hl.env("SSH_ASKPASS", home .. "/.local/bin/ssh-askpass-pass")
-hl.env("SSH_ASKPASS_REQUIRE", "force")
+-- Arch: ssh-agent.service + pass askpass. Ubuntu: GNOME's gcr-ssh-agent.
+if io.open("/etc/arch-release") then
+    hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/ssh-agent.socket")
+    hl.env("SSH_ASKPASS", home .. "/.local/bin/ssh-askpass-pass")
+    hl.env("SSH_ASKPASS_REQUIRE", "force")
+else
+    hl.env("SSH_AUTH_SOCK", os.getenv("XDG_RUNTIME_DIR") .. "/gcr/ssh")
+end
 hl.env("JAVA_HOME", home .. "/.local/share/mise/installs/java/21.0.2")
 
 -- ── Misc ───────────────────────────────────────────────────
@@ -141,7 +146,13 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("hypridle")
     hl.exec_cmd("hyprsunset")
     hl.exec_cmd("~/.local/bin/sunset-control daemon")
-    hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
+    -- polkit-gnome path: Arch, then Ubuntu (policykit-1-gnome)
+    for _, agent in ipairs({
+        "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
+        "/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1",
+    }) do
+        if io.open(agent) then hl.exec_cmd(agent) break end
+    end
     hl.exec_cmd("~/.config/hypr/scripts/monitor-hotplug")
     hl.exec_cmd("sh -c 'while true; do ~/.local/bin/check_battery; sleep 60; done'")
     hl.exec_cmd("dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP SSH_AUTH_SOCK SSH_ASKPASS SSH_ASKPASS_REQUIRE")
@@ -186,10 +197,10 @@ hl.bind(mod .. " + 3",               hl.dsp.focus({ workspace = 4 }))
 hl.bind(mod .. " + SHIFT + 3",       hl.dsp.window.move({ workspace = 4, follow = true }))
 
 -- hyper scratchpads — pyprland handles launch + hide/show
-hl.bind(hyper .. " + S", hl.dsp.exec_cmd("pypr-toggle slack"))
-hl.bind(hyper .. " + D", hl.dsp.exec_cmd("pypr-toggle discord"))
-hl.bind(hyper .. " + M", hl.dsp.exec_cmd("pypr-toggle spotify"))
-hl.bind(hyper .. " + L", hl.dsp.exec_cmd("pypr-toggle linear"))
+hl.bind(hyper .. " + S", hl.dsp.exec_cmd("pypr toggle slack"))
+hl.bind(hyper .. " + D", hl.dsp.exec_cmd("pypr toggle discord"))
+hl.bind(hyper .. " + M", hl.dsp.exec_cmd("pypr toggle spotify"))
+hl.bind(hyper .. " + L", hl.dsp.exec_cmd("pypr toggle linear"))
 
 -- focus
 hl.bind(mod .. " + H", hl.dsp.focus({ direction = "left" }))

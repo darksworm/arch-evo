@@ -6,6 +6,8 @@ bindkey -v
 # Lazy-load zsh-vi-mode on first Escape press
 _zvm_lazy_loaded=0
 _zvm_plugin_path="/usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
+[[ -f "$_zvm_plugin_path" ]] || \
+  _zvm_plugin_path="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh"
 
 _load_zvm() {
   if [[ $_zvm_lazy_loaded -eq 0 ]] && [[ -f "$_zvm_plugin_path" ]]; then
@@ -13,7 +15,7 @@ _load_zvm() {
     export ZVM_INIT_MODE=sourcing
     # Re-bind fzf key bindings after zvm loads (zvm overrides ctrl+r)
     zvm_after_init_commands+=('
-      [[ -f /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
+      _source_first /usr/share/fzf/key-bindings.zsh /usr/share/doc/fzf/examples/key-bindings.zsh
     ')
     source "$_zvm_plugin_path"
     zle vi-cmd-mode
