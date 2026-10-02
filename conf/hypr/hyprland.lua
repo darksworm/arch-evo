@@ -199,7 +199,6 @@ hl.bind(mod .. " + SHIFT + 3",       hl.dsp.window.move({ workspace = 4, follow 
 
 -- hyper scratchpads — pyprland handles launch + hide/show
 hl.bind(hyper .. " + S", hl.dsp.exec_cmd("pypr toggle slack"))
-hl.bind(hyper .. " + D", hl.dsp.exec_cmd("pypr toggle discord"))
 hl.bind(hyper .. " + M", hl.dsp.exec_cmd("pypr toggle spotify"))
 hl.bind(hyper .. " + L", hl.dsp.exec_cmd("pypr toggle linear"))
 hl.bind(hyper .. " + T", hl.dsp.exec_cmd("pypr toggle teams"))
