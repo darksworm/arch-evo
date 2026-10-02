@@ -167,7 +167,6 @@ hl.window_rule({ match = { class = "pavucontrol" }, float = true })
 hl.window_rule({ match = { class = "[Ss]lack" },      float = true })
 hl.window_rule({ match = { class = "vesktop" },       float = true })
 hl.window_rule({ match = { class = "spotify" },       float = true })
-hl.window_rule({ match = { class = "linear-linux" },  float = true })
 hl.window_rule({ match = { class = "chrome-ompifgpmddkgmclendfeacglnodjjndh-Default" }, float = true }) -- Teams PWA
 
 -- terminal workspace — foot always lives here
@@ -178,14 +177,14 @@ local mod = "SUPER"
 local hyper = "CTRL + ALT + SUPER"
 
 -- launch
-hl.bind(mod .. " + Return", hl.dsp.exec_cmd("foot"))
-hl.bind(mod .. " + D", hl.dsp.exec_cmd("fuzzel"))
-hl.bind(mod .. " + V", hl.dsp.exec_cmd("cliphist list | fuzzel -d | cliphist decode | wl-copy"))
-hl.bind(mod .. " + C", hl.dsp.exec_cmd("zen-browser"))
+hl.bind(hyper .. " + Return", hl.dsp.exec_cmd("foot"))
+hl.bind(hyper .. " + W", hl.dsp.exec_cmd("fuzzel"))
+hl.bind(hyper .. " + V", hl.dsp.exec_cmd("cliphist list | fuzzel -d | cliphist decode | wl-copy"))
+hl.bind(hyper .. " + C", hl.dsp.exec_cmd("zen-browser"))
 hl.bind(mod .. " + F", hl.dsp.exec_cmd("~/.local/bin/fanmode"))
 
 -- close window
-hl.bind(mod .. " + SHIFT + Q", hl.dsp.window.close())
+hl.bind(hyper .. " + Q", hl.dsp.window.close())
 
 -- workspaces 1-5 on the hyper home row
 for i, key in ipairs({ "A", "S", "D", "F", "G" }) do
@@ -195,31 +194,28 @@ end
 
 -- hyper scratchpads — pyprland handles launch + hide/show
 hl.bind(hyper .. " + M", hl.dsp.exec_cmd("pypr toggle spotify"))
-hl.bind(hyper .. " + L", hl.dsp.exec_cmd("pypr toggle linear"))
 hl.bind(hyper .. " + T", hl.dsp.exec_cmd("pypr toggle teams"))
 
 -- focus
-hl.bind(mod .. " + H", hl.dsp.focus({ direction = "left" }))
-hl.bind(mod .. " + L", hl.dsp.focus({ direction = "right" }))
-hl.bind(mod .. " + J", hl.dsp.focus({ direction = "down" }))
-hl.bind(mod .. " + K", hl.dsp.focus({ direction = "up" }))
+hl.bind(hyper .. " + H", hl.dsp.focus({ direction = "left" }))
+hl.bind(hyper .. " + L", hl.dsp.focus({ direction = "right" }))
+hl.bind(hyper .. " + J", hl.dsp.focus({ direction = "down" }))
+hl.bind(hyper .. " + K", hl.dsp.focus({ direction = "up" }))
 
 -- master area
-hl.bind(mod .. " + SHIFT + H", hl.dsp.layout("splitratio -0.05"))
-hl.bind(mod .. " + SHIFT + L", hl.dsp.layout("splitratio +0.05"))
-hl.bind(mod .. " + Tab", hl.dsp.focus({ workspace = "previous" }))
+hl.bind(hyper .. " + SHIFT + H", hl.dsp.layout("splitratio -0.05"))
+hl.bind(hyper .. " + SHIFT + L", hl.dsp.layout("splitratio +0.05"))
+hl.bind(hyper .. " + Tab", hl.dsp.focus({ workspace = "previous" }))
 
 -- layout
-hl.bind(mod .. " + T", hl.dsp.layout("setlayout dwindle"))
-hl.bind(mod .. " + M", hl.dsp.window.fullscreen({ mode = "maximized" }))
 hl.bind(mod .. " + SHIFT + Z", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
-hl.bind(mod .. " + space", hl.dsp.window.float())
+hl.bind(hyper .. " + space", hl.dsp.window.float())
 
 -- monitor focus
-hl.bind(mod .. " + period", hl.dsp.focus({ monitor = "+1" }))
-hl.bind(mod .. " + comma",  hl.dsp.focus({ monitor = "-1" }))
-hl.bind(mod .. " + SHIFT + greater", hl.dsp.window.move({ monitor = "+1" }))
-hl.bind(mod .. " + SHIFT + less",    hl.dsp.window.move({ monitor = "-1" }))
+hl.bind(hyper .. " + period", hl.dsp.focus({ monitor = "+1" }))
+hl.bind(hyper .. " + comma",  hl.dsp.focus({ monitor = "-1" }))
+hl.bind(hyper .. " + SHIFT + greater", hl.dsp.window.move({ monitor = "+1" }))
+hl.bind(hyper .. " + SHIFT + less",    hl.dsp.window.move({ monitor = "-1" }))
 
 -- screenshots & lock
 hl.bind(mod .. " + SHIFT + S", hl.dsp.exec_cmd("screenshot region"))
