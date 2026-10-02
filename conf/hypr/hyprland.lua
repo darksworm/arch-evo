@@ -168,6 +168,7 @@ hl.window_rule({ match = { class = "[Ss]lack" },      float = true })
 hl.window_rule({ match = { class = "vesktop" },       float = true })
 hl.window_rule({ match = { class = "spotify" },       float = true })
 hl.window_rule({ match = { class = "linear-linux" },  float = true })
+hl.window_rule({ match = { class = "chrome-ompifgpmddkgmclendfeacglnodjjndh-Default" }, float = true }) -- Teams PWA
 
 -- terminal workspace — foot always lives here
 hl.window_rule({ match = { class = "foot-scratch" }, workspace = "1 silent" })
@@ -201,6 +202,7 @@ hl.bind(hyper .. " + S", hl.dsp.exec_cmd("pypr toggle slack"))
 hl.bind(hyper .. " + D", hl.dsp.exec_cmd("pypr toggle discord"))
 hl.bind(hyper .. " + M", hl.dsp.exec_cmd("pypr toggle spotify"))
 hl.bind(hyper .. " + L", hl.dsp.exec_cmd("pypr toggle linear"))
+hl.bind(hyper .. " + T", hl.dsp.exec_cmd("pypr toggle teams"))
 
 -- focus
 hl.bind(mod .. " + H", hl.dsp.focus({ direction = "left" }))

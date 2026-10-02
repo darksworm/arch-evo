@@ -37,3 +37,13 @@ size = "75% 87%"
 position = "13% 7%"
 lazy = true
 process_tracking = false
+
+# Teams PWA installed from (snap) Chromium; the Wayland app_id is
+# chrome-<app-id>-<profile>, not the crx_ StartupWMClass in its .desktop
+[scratchpads.teams]
+command = "chromium --profile-directory=Default --app-id=ompifgpmddkgmclendfeacglnodjjndh"
+class = "chrome-ompifgpmddkgmclendfeacglnodjjndh-Default"
+size = "75% 87%"
+position = "13% 7%"
+lazy = true
+process_tracking = false
