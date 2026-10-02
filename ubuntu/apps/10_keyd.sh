@@ -21,6 +21,9 @@ sed -e '/^# Firmware emits raw F1/,/^f3 = /d' "${CONF_DIR}/keyd/default.conf" \
     | sudo tee /etc/keyd/default.conf >/dev/null
 
 enable_service keyd.service
+# Ubuntu starts keyd on install, before the config exists; it only reads the
+# config at startup, so restart it to pick up the remap.
+sudo systemctl restart keyd.service
 
 # keyd group allows runtime rebinds (bin/caps-toggle) without sudo
 getent group keyd >/dev/null || sudo groupadd keyd
