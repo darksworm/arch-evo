@@ -46,4 +46,10 @@ gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
 gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
 gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Classic'
 
+# Snaps (chromium, firefox, ...) can't see ~/.local/share/themes and fall back
+# to light Adwaita; a theme snap is shared with them via gtk-common-themes.
+if command -v snap &>/dev/null; then
+    sudo snap install gtk-theme-adw-gtk3
+fi
+
 log "Theme and appearance configured"
