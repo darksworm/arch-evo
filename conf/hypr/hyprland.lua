@@ -187,18 +187,13 @@ hl.bind(mod .. " + F", hl.dsp.exec_cmd("~/.local/bin/fanmode"))
 -- close window
 hl.bind(mod .. " + SHIFT + Q", hl.dsp.window.close())
 
--- named workspaces
-hl.bind(mod .. " + grave",           hl.dsp.focus({ workspace = 1 }))
-hl.bind(mod .. " + SHIFT + grave",   hl.dsp.window.move({ workspace = 1, follow = true }))
-hl.bind(mod .. " + 1",               hl.dsp.focus({ workspace = 2 }))
-hl.bind(mod .. " + SHIFT + 1",       hl.dsp.window.move({ workspace = 2, follow = true }))
-hl.bind(mod .. " + 2",               hl.dsp.focus({ workspace = 3 }))
-hl.bind(mod .. " + SHIFT + 2",       hl.dsp.window.move({ workspace = 3, follow = true }))
-hl.bind(mod .. " + 3",               hl.dsp.focus({ workspace = 4 }))
-hl.bind(mod .. " + SHIFT + 3",       hl.dsp.window.move({ workspace = 4, follow = true }))
+-- workspaces 1-5 on the hyper home row
+for i, key in ipairs({ "A", "S", "D", "F", "G" }) do
+    hl.bind(hyper .. " + " .. key,            hl.dsp.focus({ workspace = i }))
+    hl.bind(hyper .. " + SHIFT + " .. key,    hl.dsp.window.move({ workspace = i, follow = true }))
+end
 
 -- hyper scratchpads — pyprland handles launch + hide/show
-hl.bind(hyper .. " + S", hl.dsp.exec_cmd("pypr toggle slack"))
 hl.bind(hyper .. " + M", hl.dsp.exec_cmd("pypr toggle spotify"))
 hl.bind(hyper .. " + L", hl.dsp.exec_cmd("pypr toggle linear"))
 hl.bind(hyper .. " + T", hl.dsp.exec_cmd("pypr toggle teams"))
