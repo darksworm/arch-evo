@@ -11,7 +11,7 @@ add_ppa cppiber/hyprland
 apt_install \
     waybar fuzzel dunst libnotify-bin hyprsunset \
     grim slurp wl-clipboard cliphist \
-    brightnessctl \
+    brightnessctl socat \
     playerctl pamixer pavucontrol \
     hyprlock hypridle \
     network-manager-gnome policykit-1-gnome
