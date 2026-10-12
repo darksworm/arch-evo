@@ -1,0 +1,14 @@
+# Tools that Arch gets from pacman/AUR but Ubuntu doesn't package (or packages
+# too old). Deployed to ~/.config/mise/conf.d/ by ubuntu/apps/06_dev_tools.sh.
+# k9s is pinned in the shared conf/mise/config.toml.
+[tools]
+uv = "latest"
+ghq = "latest"
+helm = "latest"
+kustomize = "latest"
+krew = "latest"
+dive = "latest"
+kubectl = "latest"
+argo-rollouts = "latest"
+"github:Azure/kubelogin" = "latest"
+yazi = "latest"

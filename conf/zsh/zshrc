@@ -30,29 +30,43 @@ alias vi="nvim"
 alias vim="nvim"
 alias hypr-recover='HYPRLAND_INSTANCE_SIGNATURE=$(ls /run/user/1000/hypr/) hyprctl reload'
 
-# Plugins — loaded from system/AUR paths
+# Plugins — loaded from system/AUR paths (Arch) or apt / git clones (Ubuntu)
+# _source_first: source the first file that exists
+_source_first() {
+    local f
+    for f in "$@"; do
+        [[ -f "$f" ]] && { source "$f"; return 0; }
+    done
+    return 1
+}
+_zsh_local_plugins="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
 
 # Base plugin (vi-mode lazy load, etc.)
 [[ -f "${HOME}/.config/zsh/plugins/base.zsh" ]] && source "${HOME}/.config/zsh/plugins/base.zsh"
 
 # Autosuggestions
-[[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
-    source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+_source_first \
+    /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh \
+    /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 # FZF key bindings (ctrl+r history, ctrl+t files, alt+c cd)
-[[ -f /usr/share/fzf/key-bindings.zsh ]] && source /usr/share/fzf/key-bindings.zsh
+_source_first /usr/share/fzf/key-bindings.zsh /usr/share/doc/fzf/examples/key-bindings.zsh
 
-# SSH agent socket (provided by ssh-agent.service) + pass-backed askpass
-export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
-export SSH_ASKPASS="${HOME}/.local/bin/ssh-askpass-pass"
-export SSH_ASKPASS_REQUIRE=force
+# SSH agent socket (provided by ssh-agent.service) + pass-backed askpass.
+# Elsewhere (Ubuntu) keep the session's agent — gcr-ssh-agent.
+if [[ -f /etc/arch-release ]]; then
+    export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+    export SSH_ASKPASS="${HOME}/.local/bin/ssh-askpass-pass"
+    export SSH_ASKPASS_REQUIRE=force
+fi
 
 # Dev plugin (direnv, zoxide, fnm lazy loading)
 [[ -f "${HOME}/.config/zsh/plugins/dev.zsh" ]] && source "${HOME}/.config/zsh/plugins/dev.zsh"
 
 # Fast syntax highlighting (must be last)
-[[ -f /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]] && \
-    source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+_source_first \
+    /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh \
+    "${_zsh_local_plugins}/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 
 # Starship prompt — cached and compiled for speed
 _starship_cache="${XDG_CACHE_HOME:-$HOME/.cache}/starship-init.zsh"

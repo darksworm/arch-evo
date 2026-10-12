@@ -30,10 +30,15 @@ position = "13% 7%"
 lazy = true
 process_tracking = false
 
-[scratchpads.linear]
-command = "linear-linux"
-class = "linear-linux"
+# Teams PWA installed from (snap) Chromium; the Wayland app_id is
+# chrome-<app-id>-<profile>, not the crx_ StartupWMClass in its .desktop
+[scratchpads.teams]
+command = "chromium --profile-directory=Default --app-id=ompifgpmddkgmclendfeacglnodjjndh"
+class = "chrome-ompifgpmddkgmclendfeacglnodjjndh-Default"
 size = "75% 87%"
 position = "13% 7%"
 lazy = true
 process_tracking = false
+# pypr pins via a blind toggle; once Teams' pin state drifts, hide pins it
+# instead, the move to special: fails and it rides along on every workspace
+pinned = false

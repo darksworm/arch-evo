@@ -82,7 +82,7 @@
         "format": "🔊 {volume}%",
         "format-bluetooth": "🎧 {volume}%",
         "format-muted": "🔇 muted",
-        "on-click": "pwvucontrol"
+        "on-click": "pwvucontrol || pavucontrol"
     },
 
     "bluetooth": {

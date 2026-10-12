@@ -1,0 +1,51 @@
+VIA protocol 12, 8 layers  (device /dev/hidraw3)
+
+── layer 0 ──
+           TAB              Q              W              E              R              T   |   Y              U              I              O              P              DEL           
+     LT(3,ESC)              A              S              D              F              G   |   H              J              K              L              SCLN           RALT          
+          LSFT              Z              X              C              V              B   |   N              M              COMM           DOT            SLSH           RSFT          
+                   LALT(LCTL)          TT(4)           LGUI      LT(1,SPC)           LCTL   |   BSPC           LT(2,ENT)      MT(RCTL,LNG2)  RALT           LSFT+LGUI(S)                 
+
+── layer 1 ──
+          TRNS           TRNS           TRNS           TRNS            SPC        LGUI(T)   |   F6             F7             F8             F9             F10            F12           
+          TRNS           TRNS           TRNS           TRNS            ENT            DEL   |   PGUP           0xD1           UP             0xD2           KB_7           F11           
+          TRNS        LGUI(Z)            SPC        LGUI(C)        LGUI(V)        LGUI(B)   |   PGDN           LEFT           DOWN           RGHT           TRNS           TRNS          
+                         TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS                         
+
+── layer 2 ──
+          TRNS     LSFT(QUOT)              7              8              9        LSFT(8)   |   LSFT(9)        LSFT(0)        LBRC           RBRC           LSFT(4)        TRNS          
+          TRNS     LSFT(SCLN)              4              5              6           RBRC   |   NUHS           MINS           GRV            TRNS           QUOT           LSFT(2)       
+          TRNS     LSFT(MINS)              1              2              3     LSFT(RBRC)   |   TRNS           TRNS           EQL            LSFT(TRNS)     TRNS           LSFT(INT3)    
+                            0            DOT           TRNS           TRNS           TRNS   |   DEL            TRNS           TRNS           TRNS           TRNS                         
+
+── layer 3 ──
+          TRNS           TRNS           TRNS           TRNS           TRNS        LGUI(D)   |   0x782B         0x782C         0x782D         0x7802         0x782F         0x7830        
+            NO      LGUI(GRV)        LGUI(1)        LGUI(2)        LGUI(3)        LGUI(4)   |   LSFT(H)        0x7832         0x7833         0x7834         TRNS           TRNS          
+            NO         0x7824         0x7826 LCTL+LALT+LGUI(L) LCTL+LALT+LGUI(S) LCTL+LALT+LGUI(C)   |   LCTL+LALT+LGUI(D) LCTL+LALT+LGUI(M) LCTL+LALT+LGUI(F) TRNS           TRNS           TRNS          
+                         TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           KB_0           0x7C00                       
+
+── layer 4 ──
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   MPRV           VOLD           VOLU           MNXT           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+                         TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS                         
+
+── layer 5 ──
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+                         TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS                         
+
+── layer 6 ──
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+                         TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS                         
+
+── layer 7 ──
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+          TRNS           TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS           TRNS          
+                         TRNS           TRNS           TRNS           TRNS           TRNS   |   TRNS           TRNS           TRNS           TRNS           TRNS                         
+
+raw keycodes written to notes/keyball/keymap-backup-2026-10-07.json
