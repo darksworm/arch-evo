@@ -3,6 +3,7 @@ idiomatic_version_file = true
 idiomatic_version_file_enable_tools = ["node", "java"]
 
 [tools]
+dotnet = "8"
 java = "21"
 k6 = "latest"
 k9s = "0.50.15"
