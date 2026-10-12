@@ -39,3 +39,6 @@ size = "75% 87%"
 position = "13% 7%"
 lazy = true
 process_tracking = false
+# pypr pins via a blind toggle; once Teams' pin state drifts, hide pins it
+# instead, the move to special: fails and it rides along on every workspace
+pinned = false
