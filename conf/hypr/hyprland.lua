@@ -160,7 +160,7 @@ hl.on("hyprland.start", function()
 end)
 
 -- ── Window Rules ────────────────────────────────────────────
-hl.window_rule({ match = { class = "zen-browser" }, workspace = "2 silent" })
+hl.window_rule({ match = { class = "(zen|zen-browser)" }, workspace = "2 silent" })
 hl.window_rule({ match = { class = "pavucontrol" }, float = true })
 
 -- hyper scratchpads — pyprland manages position/size, but needs float on
@@ -208,7 +208,7 @@ hl.bind(hyper .. " + SHIFT + L", hl.dsp.layout("splitratio +0.05"))
 hl.bind(hyper .. " + Tab", hl.dsp.focus({ workspace = "previous" }))
 
 -- layout
-hl.bind(mod .. " + SHIFT + Z", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
+hl.bind(hyper .. " + Z", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
 hl.bind(hyper .. " + space", hl.dsp.window.float())
 
 -- monitor focus

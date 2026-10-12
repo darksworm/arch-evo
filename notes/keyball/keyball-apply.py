@@ -17,13 +17,14 @@ import sys
 ROWS, COLS = 8, 6
 HYPER = 0x0D00  # C(A(G(kc))) — LCTL|LALT|LGUI in the QK_MODS range
 KC = {"A": 0x04, "C": 0x06, "D": 0x07, "F": 0x09, "G": 0x0A, "H": 0x0B,
-      "S": 0x16, "T": 0x17, "V": 0x19, "COMM": 0x36}
+      "S": 0x16, "T": 0x17, "V": 0x19, "Q": 0x14, "W": 0x1A, "Z": 0x1D, "ENT": 0x28, "TAB": 0x2B, "SPC": 0x2C,
+      "COMM": 0x36, "DOT": 0x37}
 NO, TRNS = 0x0000, 0x0001
 
-# (layer, matrix row, matrix col, expected old, new, note)
+# (layer, matrix row, matrix col, expected old (int or tuple), new, note)
 # right half: matrix row = visual row + 4, col mirrored (outer key = col 0)
 CHANGES = [
-    (3, 1, 1, 0x0835, HYPER | KC["A"], "Esc+A  Super+`    -> Hyper+A (ws 1)"),
+    (3, 1, 1, (0x0835, TRNS), HYPER | KC["A"], "Esc+A  Super+`    -> Hyper+A (ws 1)"),
     (3, 1, 2, 0x081E, HYPER | KC["S"], "Esc+S  Super+1    -> Hyper+S (ws 2)"),
     (3, 1, 3, 0x081F, HYPER | KC["D"], "Esc+D  Super+2    -> Hyper+D (ws 3)"),
     (3, 1, 4, 0x0820, HYPER | KC["F"], "Esc+F  Super+3    -> Hyper+F (ws 4)"),
@@ -34,8 +35,16 @@ CHANGES = [
     (3, 2, 5, 0x0D06, NO,              "Esc+B  Hyper+C    -> NO"),
     (3, 6, 5, 0x0D07, NO,              "Esc+N  Hyper+D    -> NO (discord gone)"),
     (3, 6, 3, 0x0D09, HYPER | KC["COMM"], "Esc+,  Hyper+F    -> Hyper+, (monitor -1)"),
+    (3, 0, 0, TRNS,   HYPER | KC["TAB"], "Esc+Tab TRNS      -> Hyper+Tab (prev ws)"),
+    (3, 0, 1, TRNS,   HYPER | KC["Q"], "Esc+Q  TRNS       -> Hyper+Q (close)"),
+    (3, 0, 2, TRNS,   HYPER | KC["W"], "Esc+W  TRNS       -> Hyper+W (fuzzel)"),
     (3, 0, 5, 0x0807, HYPER | KC["T"], "Esc+T  Super+D    -> Hyper+T (teams)"),
     (3, 5, 5, 0x020B, HYPER | KC["H"], "Esc+H  Shift+H    -> Hyper+H (focus left)"),
+    (3, 3, 4, TRNS,   HYPER | KC["SPC"], "Esc+Space thumb TRNS -> Hyper+Space (float)"),
+    (3, 6, 2, TRNS,   HYPER | KC["DOT"], "Esc+.  TRNS       -> Hyper+. (monitor +1)"),
+    (3, 7, 4, TRNS,   HYPER | KC["ENT"], "Esc+Enter thumb TRNS -> Hyper+Return (foot)"),
+    (3, 2, 1, 0x7824, HYPER | KC["Z"], "Esc+Z  RGB key       -> Hyper+Z (fullscreen)"),
+    (1, 2, 1, 0x081D, TRNS,            "L1 Z   Super+Z    -> TRNS"),
     (1, 0, 5, 0x0817, TRNS,            "L1 T   Super+T    -> TRNS"),
     (1, 2, 3, 0x0806, TRNS,            "L1 C   Super+C    -> TRNS"),
     (1, 2, 4, 0x0819, TRNS,            "L1 V   Super+V    -> TRNS"),
@@ -47,6 +56,10 @@ def xfer(fd, payload):
     if not select.select([fd], [], [], 1.0)[0]:
         raise SystemExit("timeout waiting for keyboard reply")
     return os.read(fd, 32)
+
+
+def olds(o):
+    return o if isinstance(o, tuple) else (o,)
 
 
 def get(fd, layer, row, col):
@@ -84,10 +97,10 @@ try:
                         n += 1
         print(f"{n} keys {'would be ' if dry else ''}restored")
     else:
-        stale = [(ch, cur) for ch in CHANGES if (cur := get(fd, *ch[:3])) not in (ch[3], ch[4])]
+        stale = [(ch, cur) for ch in CHANGES if (cur := get(fd, *ch[:3])) not in (*olds(ch[3]), ch[4])]
         if stale:
             for ch, cur in stale:
-                print(f"unexpected value {cur:#06x} at {ch[5]} (expected {ch[3]:#06x})")
+                print(f"unexpected value {cur:#06x} at {ch[5]} (expected {' or '.join(f'{o:#06x}' for o in olds(ch[3]))})")
             raise SystemExit("keymap differs from the backup — nothing written")
         for l, r, c, old, new, note in CHANGES:
             print(("DRY  " if dry else "SET  ") + note)
