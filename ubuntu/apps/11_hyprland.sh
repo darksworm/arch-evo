@@ -9,16 +9,15 @@ section "Hyprland Compositor"
 add_ppa cppiber/hyprland
 apt_install hyprland xdg-desktop-portal-hyprland xdg-desktop-portal-gtk
 
-# pyprland (scratchpads) — Python app, isolated via uv
+# scratchd (scratchpads) — Rust rewrite of pyprland's scratchpads
 ensure_mise
-if ! command -v uv &>/dev/null; then
-    mise use --global uv@latest
-fi
-uv tool install --upgrade pyprland
+command -v cargo &>/dev/null || mise use --global rust@latest
+log "Building scratchd..."
+mise exec rust -- cargo install --locked --root "${HOME}/.local" --git https://github.com/darksworm/scratchd
 
 # Deploy configs
 log "Deploying Hyprland config..."
 deploy_config "${CONF_DIR}/hypr/hyprland.lua" "${HOME}/.config/hypr/hyprland.lua"
-deploy_config "${CONF_DIR}/pypr/config.toml" "${HOME}/.config/pypr/config.toml"
+deploy_config "${CONF_DIR}/scratchd/config.toml" "${HOME}/.config/scratchd/config.toml"
 
 log "Hyprland installed — pick it from the session menu (gear icon) on the GDM login screen"

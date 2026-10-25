@@ -139,7 +139,7 @@ hl.config({
 hl.on("hyprland.start", function()
     hl.exec_cmd("awww-daemon && (awww restore || awww img ~/.local/share/wallpapers/egg-dali.jpg --transition-type none)")
     hl.exec_cmd("waybar")
-    hl.exec_cmd("sleep 2 && pypr")
+    hl.exec_cmd("scratchd daemon --log ~/.cache/scratchd.log")
     hl.exec_cmd("dunst")
     hl.exec_cmd("nm-applet --indicator")
     hl.exec_cmd("wl-paste --watch cliphist store")
@@ -163,10 +163,11 @@ end)
 hl.window_rule({ match = { class = "(zen|zen-browser)" }, workspace = "2 silent" })
 hl.window_rule({ match = { class = "pavucontrol" }, float = true })
 
--- hyper scratchpads — pyprland manages position/size, but needs float on
+-- hyper scratchpads — scratchd manages position/size, but needs float on
 hl.window_rule({ match = { class = "[Ss]lack" },      float = true })
 hl.window_rule({ match = { class = "vesktop" },       float = true })
-hl.window_rule({ match = { class = "spotify" },       float = true })
+hl.window_rule({ match = { class = "[Ss]potify" },    float = true })
+hl.window_rule({ match = { class = "blueman-manager" }, float = true })
 hl.window_rule({ match = { class = "chrome-ompifgpmddkgmclendfeacglnodjjndh-Default" }, float = true }) -- Teams PWA
 
 -- terminal workspace — foot always lives here
@@ -192,9 +193,11 @@ for i, key in ipairs({ "A", "S", "D", "F", "G" }) do
     hl.bind(hyper .. " + SHIFT + " .. key,    hl.dsp.window.move({ workspace = i, follow = true }))
 end
 
--- hyper scratchpads — pyprland handles launch + hide/show
-hl.bind(hyper .. " + M", hl.dsp.exec_cmd("pypr toggle spotify"))
-hl.bind(hyper .. " + T", hl.dsp.exec_cmd("pypr toggle teams"))
+-- hyper scratchpads — scratchd handles launch + hide/show
+hl.bind(hyper .. " + M", hl.dsp.exec_cmd("scratchd toggle spotify"))
+hl.bind(hyper .. " + T", hl.dsp.exec_cmd("scratchd toggle teams"))
+hl.bind(hyper .. " + B", hl.dsp.exec_cmd("scratchd toggle bluetooth"))
+hl.bind(hyper .. " + Y", hl.dsp.exec_cmd("scratchd toggle slack"))
 
 -- focus
 hl.bind(hyper .. " + H", hl.dsp.focus({ direction = "left" }))

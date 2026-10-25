@@ -1,0 +1,67 @@
+# scratchd (github.com/darksworm/scratchd): pyprland's scratchpads rewritten in Rust, same
+# [scratchpads.*] format. Each scratchpad runs independently, so an app that
+# is slow to start or fails only affects its own key.
+#
+# 75x87% centered — mirrors AeroSpace scratchpad setup
+# lazy = true means app only launches on first keypress, not at startup
+# pinned = false keeps a shown scratchpad on its workspace instead of
+# following you to every workspace
+# app output goes to ~/.local/state/scratchd/<name>.log
+
+[scratchpads.slack]
+# snap Slack dies if XDG_CONFIG_HOME points at ~/.config, which a daemon
+# started from zsh inherits via zshenv
+command = "env -u XDG_CONFIG_HOME slack"
+class = "slack"
+size = "75% 87%"
+position = "13% 7%"
+lazy = true
+excludes = ["*"]
+unfocus = "hide"
+pinned = false
+
+[scratchpads.discord]
+command = "vesktop"
+class = "vesktop"
+match_by = "initialTitle"
+initialTitle = "Discord"
+size = "75% 87%"
+position = "13% 7%"
+lazy = true
+excludes = ["*"]
+unfocus = "hide"
+pinned = false
+
+[scratchpads.spotify]
+command = "spotify"
+# lowercase on Arch, capitalised by the Ubuntu build
+class = "re:^[Ss]potify$"
+size = "75% 87%"
+position = "13% 7%"
+lazy = true
+excludes = ["*"]
+unfocus = "hide"
+pinned = false
+
+# Teams PWA installed from (snap) Chromium; the Wayland app_id is
+# chrome-<app-id>-<profile>, not the crx_ StartupWMClass in its .desktop
+[scratchpads.teams]
+command = "chromium --profile-directory=Default --app-id=ompifgpmddkgmclendfeacglnodjjndh"
+class = "chrome-ompifgpmddkgmclendfeacglnodjjndh-Default"
+size = "75% 87%"
+position = "13% 7%"
+lazy = true
+excludes = ["*"]
+unfocus = "hide"
+pinned = false
+
+# blueman-manager via a wrapper that kills the tray icon blueman force-spawns
+[scratchpads.bluetooth]
+command = "bluetooth-ui"
+class = "blueman-manager"
+size = "35% 50%"
+position = "32% 20%"
+lazy = true
+excludes = ["*"]
+unfocus = "hide"
+pinned = false

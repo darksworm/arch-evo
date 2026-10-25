@@ -54,9 +54,9 @@ apply() {
 }
 
 # After a monitor swap the wallpaper daemon, bar and scratchpads keep stale
-# state (overlapping wallpapers, bar offset wrong, pyprland scratchpads
+# state (overlapping wallpapers, bar offset wrong, scratchpads
 # orphaned to the removed monitor). Re-apply the wallpaper, relaunch waybar
-# and reload pypr so all three re-layout cleanly.
+# and reload scratchd so all three re-layout cleanly.
 refresh_ui() {
     local img
     img=$(awww query 2>/dev/null | grep -oP 'image: \K.*' | head -1)
@@ -64,8 +64,8 @@ refresh_ui() {
     pkill -x waybar 2>/dev/null
     sleep 0.4
     setsid waybar >/dev/null 2>&1 &
-    # Re-sync pyprland so scratchpads rebind to the surviving monitor.
-    pypr reload >/dev/null 2>&1
+    # Re-sync scratchd so scratchpads rebind to the surviving monitor.
+    scratchd reload >/dev/null 2>&1
 }
 
 # Apply on startup (handles already-plugged-in monitors)
